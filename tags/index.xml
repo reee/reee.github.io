@@ -7,10 +7,46 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>Copyright © 2019, Hong; all rights reserved.</copyright>
-    <lastBuildDate>Sun, 27 Dec 2015 11:32:36 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 16 Aug 2019 12:33:19 +0800</lastBuildDate>
     
 	<atom:link href="https://hong.im/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>bittorrent client</title>
+      <link>https://hong.im/tags/bittorrent-client/</link>
+      <pubDate>Fri, 16 Aug 2019 12:33:19 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/bittorrent-client/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>qbittorrent</title>
+      <link>https://hong.im/tags/qbittorrent/</link>
+      <pubDate>Fri, 16 Aug 2019 12:33:19 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/qbittorrent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rtorrent</title>
+      <link>https://hong.im/tags/rtorrent/</link>
+      <pubDate>Fri, 16 Aug 2019 12:33:19 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/rtorrent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>transmission</title>
+      <link>https://hong.im/tags/transmission/</link>
+      <pubDate>Fri, 16 Aug 2019 12:33:19 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/transmission/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Centos 7</title>
@@ -67,7 +103,7 @@
     </item>
     
     <item>
-      <title>openwrt</title>
+      <title>OpenWRT</title>
       <link>https://hong.im/tags/openwrt/</link>
       <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
       
