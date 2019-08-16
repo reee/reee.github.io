@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dumb-ap on 北落师门</title>
+    <link>https://hong.im/tags/dumb-ap/</link>
+    <description>Recent content in dumb-ap on 北落师门</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>Copyright © 2019, Hong; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 05 Aug 2013 13:46:38 +0000</lastBuildDate>
+    
+	<atom:link href="https://hong.im/tags/dumb-ap/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>配置一台基于openwrt的无线路由器作为纯无线AP使用</title>
+      <link>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</link>
+      <pubDate>Mon, 05 Aug 2013 13:46:38 +0000</pubDate>
+      
+      <guid>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</guid>
+      <description>什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
+无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
+对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。
+另外一个补充就是，因为无线路由器方式共享一个出口IP，所以说适用于共享上网的场景。而无线AP方式因为每个用户都是独立获取IP，所以适合于每个用户都用自己的账号进行上网的场景。
+openwrt上对Dumb AP的定义，事实上就是我们所说的AP。这里就不再多说了。
+配置openwrt的dumb AP 模式 怎么刷openwrt我就不说了吧……= =
+主要参考 OpenWRT 官方Wiki：Dumb AP，但是官方Wiki有少许语焉不明。当然Wiki肯定会被继续完善，不过现在还是先看哥的吧。
+修改网络配置文件(/etc/config/network) 因为现在纯无线AP反而比无线路由器贵，所以说一般来讲看这个教程的应该是无线路由器的用户（非无线路由器用户请参考openwrt 官方教程），那么我们需要把WAN口和LAN口桥接起来（如果我没理解错的话）：
+config interface lan option type &#39;bridge&#39; option ifname &#39;eth0.1 eth1&#39; # 将vlan1 和 wan桥接起来 option proto &#39;dhcp&#39;  这里需要注意的是，官方教程是把eth0.1和eth1桥接起来，但是事实上很多设备的WAN口不一定是eth1，譬如水星4530r的wan事实上却是eth0.2，所以请自行参考wan口的配置文件，譬如如果wan段如下，那么在lan段就应该是将eth0.1和eth0.2桥接起来，也就是： option ifname &amp;lsquo;eth0.1 eth0.2&amp;rsquo;
+config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后，我们需要禁用本身路由器关于wan口的配置：直接把所有wan，wan6的配置文件部分都注释掉，譬如wan6的配置部分：
+#config interface &#39;wan6&#39; # option proto &#39;dhcpv6&#39; # option ifname &#39;@wan&#39;  修改无线配置文件(/etc/config/wireless) 修改完成以后的文件看起来像下面这样：</description>
+    </item>
+    
+  </channel>
+</rss>

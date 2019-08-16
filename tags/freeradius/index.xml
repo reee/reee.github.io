@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>freeradius on 北落师门</title>
+    <link>https://hong.im/tags/freeradius/</link>
+    <description>Recent content in freeradius on 北落师门</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>Copyright © 2019, Hong; all rights reserved.</copyright>
+    
+	<atom:link href="https://hong.im/tags/freeradius/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>在CentOS上搭建pptp服务器并使用radius进行账户认证</title>
+      <link>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
+      <description>感觉主流的VPN服务器里面pptp应该是最简单的了。总结下吧。本来没想搞这个的。可惜ipv4下的openvpn根本就是被我伟大的防火墙秒杀。所以先配个用着吧。
+系统环境：centos 6.3 x86_64 xen虚拟机（我会炫耀说是樱花的么 = =）
+安装相关软件 首先需要安装ppp和pptp以及radius认证库radiusclient-ng，ppp和radiusclient-ng在官方源里面有，所以直接安装就行了：
+yum -y install ppp radiusclient-ng  这里需要说一下的就是大部分教程都要求安装radiusclient而非radiusclient-ng。但是如果到radiusclient-ng的官方页面你会发现radiusclient-ng其实就是radiusclient的后续版本，最新的radiusclient已经是05年的了，虽然似乎不影响使用，但是真的是太老太老了。
+pptpd直接安装sourceforge上提供的二进制版本就好了，这里是64位版本，如果你要安装32位版本把尾巴的x86_64改成i686就好了，如果是centos5的话，自己改咯：
+rpm -ivh http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.3.4-2.el6.x86_64.rpm  修改相关配置 备份是个好习惯，不过其实这里没太大必要备份了= =：
+mv /etc/ppp/options.pptpd /etc/ppp/options.pptpd.bak vi /etc/ppp/options.pptpd  在option.pptpd里面写入相关的配置：
+name pptpd refuse-pap refuse-chap refuse-mschap require-mschap-v2 require-mppe-128 proxyarp lock nobsdcomp novj novjccomp nologfd idle 2592000 ms-dns 8.8.8.8 ms-dns 8.8.4.4 #下面是radius认证需要的库以及配置文件 #同样的，如果您是32位系统应该将lib64改为lib plugin /usr/lib64/pppd/2.4.5/radius.so plugin /usr/lib64/pppd/2.4.5/radattr.so radius-config-file /etc/radiusclient-ng/radiusclient.conf  修改/etc/pptpd.conf
+mv /etc/pptpd.conf /etc/pptpd.conf.bak vi /etc/pptpd.conf  其实需要改动的很少，其他还有一些譬如限制同时在线人数的，请自己阅读原始的pptpd.conf：
+option /etc/ppp/options.pptpd #下面是指定服务器使用的IP localip 192.</description>
+    </item>
+    
+  </channel>
+</rss>
