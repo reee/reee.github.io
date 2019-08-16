@@ -13,10 +13,10 @@
     
     <item>
       <title>在CentOS上搭建pptp服务器并使用radius进行账户认证</title>
-      <link>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
+      <link>https://hong.im/1/01/%E5%9C%A8centos%E4%B8%8A%E6%90%AD%E5%BB%BApptp%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B9%B6%E4%BD%BF%E7%94%A8radius%E8%BF%9B%E8%A1%8C%E8%B4%A6%E6%88%B7%E8%AE%A4%E8%AF%81/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
+      <guid>https://hong.im/1/01/%E5%9C%A8centos%E4%B8%8A%E6%90%AD%E5%BB%BApptp%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B9%B6%E4%BD%BF%E7%94%A8radius%E8%BF%9B%E8%A1%8C%E8%B4%A6%E6%88%B7%E8%AE%A4%E8%AF%81/</guid>
       <description>感觉主流的VPN服务器里面pptp应该是最简单的了。总结下吧。本来没想搞这个的。可惜ipv4下的openvpn根本就是被我伟大的防火墙秒杀。所以先配个用着吧。
 系统环境：centos 6.3 x86_64 xen虚拟机（我会炫耀说是樱花的么 = =）
 安装相关软件 首先需要安装ppp和pptp以及radius认证库radiusclient-ng，ppp和radiusclient-ng在官方源里面有，所以直接安装就行了：

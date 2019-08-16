@@ -14,10 +14,10 @@
     
     <item>
       <title>配置一台基于openwrt的无线路由器作为纯无线AP使用</title>
-      <link>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</link>
+      <link>https://hong.im/2013/08/%E9%85%8D%E7%BD%AE%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eopenwrt%E7%9A%84%E6%97%A0%E7%BA%BF%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BD%9C%E4%B8%BA%E7%BA%AF%E6%97%A0%E7%BA%BFap%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Mon, 05 Aug 2013 13:46:38 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</guid>
+      <guid>https://hong.im/2013/08/%E9%85%8D%E7%BD%AE%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eopenwrt%E7%9A%84%E6%97%A0%E7%BA%BF%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BD%9C%E4%B8%BA%E7%BA%AF%E6%97%A0%E7%BA%BFap%E4%BD%BF%E7%94%A8/</guid>
       <description>什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
 无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
 对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。

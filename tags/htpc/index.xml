@@ -14,10 +14,10 @@
     
     <item>
       <title>一台基于APU的HTPC</title>
-      <link>https://hong.im/post/2013-06-13-an-apu-based-htpc/</link>
+      <link>https://hong.im/2013/06/%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eapu%E7%9A%84htpc/</link>
       <pubDate>Thu, 13 Jun 2013 09:30:25 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-06-13-an-apu-based-htpc/</guid>
+      <guid>https://hong.im/2013/06/%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eapu%E7%9A%84htpc/</guid>
       <description>一、概述 本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。
 二、硬件 使用到的硬件如下：
  主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～） 机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299 内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价） 硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188 硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价） 遥控器：挥挥鼠M3 价格：￥158（已降价） 键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99 电源：本地电脑城买的最便宜的电源 价格：￥99  合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。
@@ -31,10 +31,10 @@
     
     <item>
       <title>ATI显卡高清视频播放</title>
-      <link>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</link>
+      <link>https://hong.im/1/01/ati%E6%98%BE%E5%8D%A1%E9%AB%98%E6%B8%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</guid>
+      <guid>https://hong.im/1/01/ati%E6%98%BE%E5%8D%A1%E9%AB%98%E6%B8%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/</guid>
       <description>前一个月手痒没忍住，入了AMD的E350 APU平台，主板加电源加硬盘加机箱一共花了1K左右，作为一个30W多一点的HTPC+NAS解决方案感觉还是不错的。至于装配过程就没啥好说的了，就一块板子插上电源拧上螺丝。走线神码的，乃们自己去看chiphell上面那些大神耍帅吧。
 既然要作为NAS，显然跑Linux就是一个合理的选择了，不过地球人都知道Linux下的高清硬解神码的，跟Windows比就是战斗力只有5的渣渣啊。
 废话不多说，ATI的开源显卡驱动并不支持高清视频硬解，当然它可能在不久的将来到来，不过，你就翘着脖子等着吧。另外不要相信之前文章说高清视频播放开源驱动比闭源驱动开硬解资源占用要低。我如果用开源驱动只能勉强搞定720P。1080P。哦买噶。完全是幻灯片啊。

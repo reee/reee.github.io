@@ -14,10 +14,10 @@
     
     <item>
       <title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title>
-      <link>https://hong.im/post/2014-07-08-use-ipset-with-shadowsocks-on-openwrt/</link>
+      <link>https://hong.im/2014/07/%E4%BD%BF%E7%94%A8ipset%E8%AE%A9openwrt%E4%B8%8A%E7%9A%84shadowsocks%E6%9B%B4%E6%99%BA%E8%83%BD%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E6%B5%81%E9%87%8F/</link>
       <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-07-08-use-ipset-with-shadowsocks-on-openwrt/</guid>
+      <guid>https://hong.im/2014/07/%E4%BD%BF%E7%94%A8ipset%E8%AE%A9openwrt%E4%B8%8A%E7%9A%84shadowsocks%E6%9B%B4%E6%99%BA%E8%83%BD%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E6%B5%81%E9%87%8F/</guid>
       <description>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。
 使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。
 本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。
@@ -30,10 +30,10 @@ kmod: failed to insert /lib/modules/3.10.44/ip_set.ko kmod: failed to insert /li
     
     <item>
       <title>配置一台基于openWRT的路由器使用shadowsocks并智能穿墙</title>
-      <link>https://hong.im/post/2014-03-16-configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</link>
+      <link>https://hong.im/2014/03/%E9%85%8D%E7%BD%AE%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eopenwrt%E7%9A%84%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BD%BF%E7%94%A8shadowsocks%E5%B9%B6%E6%99%BA%E8%83%BD%E7%A9%BF%E5%A2%99/</link>
       <pubDate>Sun, 16 Mar 2014 21:07:48 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-03-16-configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</guid>
+      <guid>https://hong.im/2014/03/%E9%85%8D%E7%BD%AE%E4%B8%80%E5%8F%B0%E5%9F%BA%E4%BA%8Eopenwrt%E7%9A%84%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BD%BF%E7%94%A8shadowsocks%E5%B9%B6%E6%99%BA%E8%83%BD%E7%A9%BF%E5%A2%99/</guid>
       <description>本文开始写作时中使用的路由器为TP-LINK WR841N（D）V7（with openwrt 12.09 稳定版），到这次更新时已经换为了水星 4530R （with openwrt trunk）
 在路由器上使用shadowsocks的优势： 0. 效率比较高，在我的不严谨测试中效率比ipsec和pptp都略高。 1. 目前为止比较稳定（较少受到干扰）而且比较安全。 2. 服务器端和客户端的配置都相对来说比较简单，不容易出错。 3. 路由器下面的所有设备都可以0配置自动穿墙，你懂的。 4. 相比goagent（基本阵亡？默哀）而言，要求的包都很小。
 劣势 0. 暂时没有发现。（是的。本来的问题我貌似解决了。）

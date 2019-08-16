@@ -14,10 +14,10 @@
     
     <item>
       <title>在Linux下面批量修改文件名字以及内容</title>
-      <link>https://hong.im/post/2013-10-27-edit-a-batch-of-files-in-linux/</link>
+      <link>https://hong.im/2013/10/%E5%9C%A8linux%E4%B8%8B%E9%9D%A2%E6%89%B9%E9%87%8F%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%90%8D%E5%AD%97%E4%BB%A5%E5%8F%8A%E5%86%85%E5%AE%B9/</link>
       <pubDate>Sun, 27 Oct 2013 15:39:41 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-10-27-edit-a-batch-of-files-in-linux/</guid>
+      <guid>https://hong.im/2013/10/%E5%9C%A8linux%E4%B8%8B%E9%9D%A2%E6%89%B9%E9%87%8F%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%90%8D%E5%AD%97%E4%BB%A5%E5%8F%8A%E5%86%85%E5%AE%B9/</guid>
       <description>众所周知，sed和awk被称为Linux系统维护的两大瑞士军刀，但是一直没学会……最近遇到批量修改文件的场合，用到了sed，所以记录一下。
 批量修改文件名字 for i in `ls`; do mv -f $i `echo $i | sed &#39;s/oldstring/newstring/&#39;`; done  其实上面已经不算是一个语句了，而是通过for循环一个个的取出所有文件名达到遍历的效果。 基本原理是使用echo取得文件名，交给sed替换字符串然后把结果（也就是新的文件名）作为参数回传给mv。 需要注意的是，在shell里面把命令运行结果当作参数引用时，是需要用到 `` （键盘esc下面那个键）把需要引用的部分包围起来的。
 批量替换文件内容 sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep -rl oldstring /path/to/dir`  这个其实蛮简单的。说下sed的几个参数。
@@ -26,10 +26,10 @@
     
     <item>
       <title>高流量大并发Linux TCP 性能调优</title>
-      <link>https://hong.im/post/2013-04-20-linux-tcp-tuning/</link>
+      <link>https://hong.im/2013/04/%E9%AB%98%E6%B5%81%E9%87%8F%E5%A4%A7%E5%B9%B6%E5%8F%91linux-tcp-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/</link>
       <pubDate>Sat, 20 Apr 2013 00:23:43 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-04-20-linux-tcp-tuning/</guid>
+      <guid>https://hong.im/2013/04/%E9%AB%98%E6%B5%81%E9%87%8F%E5%A4%A7%E5%B9%B6%E5%8F%91linux-tcp-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/</guid>
       <description>呃……标题比较隐晦。其实主要是手里面的跑openvpn服务器。因为并没有明文禁p2p（哎……想想那么多流量好像不跑点p2p也跑不完），所以造成有的时候如果有比较多人跑BT的话，会造成VPN速度急剧下降。
 本文参考文章为：
 优化Linux下的内核TCP参数来提高服务器负载能力
@@ -44,10 +44,10 @@ fs.file-max = 51200 #提高整个系统的文件限制 net.ipv4.tcp_syncookies =
     
     <item>
       <title>ATI显卡高清视频播放</title>
-      <link>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</link>
+      <link>https://hong.im/1/01/ati%E6%98%BE%E5%8D%A1%E9%AB%98%E6%B8%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</guid>
+      <guid>https://hong.im/1/01/ati%E6%98%BE%E5%8D%A1%E9%AB%98%E6%B8%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/</guid>
       <description>前一个月手痒没忍住，入了AMD的E350 APU平台，主板加电源加硬盘加机箱一共花了1K左右，作为一个30W多一点的HTPC+NAS解决方案感觉还是不错的。至于装配过程就没啥好说的了，就一块板子插上电源拧上螺丝。走线神码的，乃们自己去看chiphell上面那些大神耍帅吧。
 既然要作为NAS，显然跑Linux就是一个合理的选择了，不过地球人都知道Linux下的高清硬解神码的，跟Windows比就是战斗力只有5的渣渣啊。
 废话不多说，ATI的开源显卡驱动并不支持高清视频硬解，当然它可能在不久的将来到来，不过，你就翘着脖子等着吧。另外不要相信之前文章说高清视频播放开源驱动比闭源驱动开硬解资源占用要低。我如果用开源驱动只能勉强搞定720P。1080P。哦买噶。完全是幻灯片啊。
@@ -60,10 +60,10 @@ XBMC: XBMC与VLC类似，但是能搞定那两个REMUX的ts文件。另外我开
     
     <item>
       <title>在CentOS上搭建pptp服务器并使用radius进行账户认证</title>
-      <link>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
+      <link>https://hong.im/1/01/%E5%9C%A8centos%E4%B8%8A%E6%90%AD%E5%BB%BApptp%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B9%B6%E4%BD%BF%E7%94%A8radius%E8%BF%9B%E8%A1%8C%E8%B4%A6%E6%88%B7%E8%AE%A4%E8%AF%81/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
+      <guid>https://hong.im/1/01/%E5%9C%A8centos%E4%B8%8A%E6%90%AD%E5%BB%BApptp%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B9%B6%E4%BD%BF%E7%94%A8radius%E8%BF%9B%E8%A1%8C%E8%B4%A6%E6%88%B7%E8%AE%A4%E8%AF%81/</guid>
       <description>感觉主流的VPN服务器里面pptp应该是最简单的了。总结下吧。本来没想搞这个的。可惜ipv4下的openvpn根本就是被我伟大的防火墙秒杀。所以先配个用着吧。
 系统环境：centos 6.3 x86_64 xen虚拟机（我会炫耀说是樱花的么 = =）
 安装相关软件 首先需要安装ppp和pptp以及radius认证库radiusclient-ng，ppp和radiusclient-ng在官方源里面有，所以直接安装就行了：

@@ -13,10 +13,10 @@
     
     <item>
       <title>在wr841n上刷openwrt并使用openvpn自动VPN</title>
-      <link>https://hong.im/post/2012-11-03-openvpn-on-wr841n-with-openwrt/</link>
+      <link>https://hong.im/1/01/%E5%9C%A8wr841n%E4%B8%8A%E5%88%B7openwrt%E5%B9%B6%E4%BD%BF%E7%94%A8openvpn%E8%87%AA%E5%8A%A8vpn/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-11-03-openvpn-on-wr841n-with-openwrt/</guid>
+      <guid>https://hong.im/1/01/%E5%9C%A8wr841n%E4%B8%8A%E5%88%B7openwrt%E5%B9%B6%E4%BD%BF%E7%94%A8openvpn%E8%87%AA%E5%8A%A8vpn/</guid>
       <description>刚出来工作就买了一个WR841ND。最开始其实没咋倒腾，因为dd-wrt虽然功能多但是用到的不多，反而配置太多看着头晕，而开始倒腾openwrt的时候又觉得openwrt的界面太难看&amp;mdash;不想动。所以其实一直是官方固件。不过最近由于斯巴达的即将召开，导致Google搜索基本上来讲完全瘫痪，而恰好又买了一个香港的VPS。所以决定倒腾倒腾让路由器直接连VPN然后智能路由。
 硬件信息：TP-Link TL-WR841ND v7.1
 注意：一下操作要求一定的linux基础和一定动手能力，所以请务必谋定而动。

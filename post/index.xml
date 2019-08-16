@@ -14,10 +14,10 @@
     
     <item>
       <title>在centOS 7上面，从源码包重新编译软件包</title>
-      <link>https://hong.im/post/2015-12-27-rebuild-from-srpm-on-centos-7/</link>
+      <link>https://hong.im/post/rebuild-from-srpm-on-centos-7/</link>
       <pubDate>Sun, 27 Dec 2015 11:32:36 +0000</pubDate>
       
-      <guid>https://hong.im/post/2015-12-27-rebuild-from-srpm-on-centos-7/</guid>
+      <guid>https://hong.im/post/rebuild-from-srpm-on-centos-7/</guid>
       <description>众所周知，ocserv需要重新编译才能支持比较详细的路由设置。这里简单总结一下如何在centOS 7 上面，从srpm出发，重新编译RPM包。
 基本参考的资料就是官方的构建环境搭建指南和RPM重构指南： https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment https://wiki.centos.org/HowTos/RebuildSRPM
 搭建构建环境  首先安装必备的软件包：
@@ -37,10 +37,10 @@ rpm -i /path/to/the/rpm  相关的文件会被解压到上一步新建的文件�
     
     <item>
       <title>亲身经历某地区医院的医疗事故，说一下看法和不满。</title>
-      <link>https://hong.im/post/2014-09-04-a-medical-malpractice-experience/</link>
+      <link>https://hong.im/post/a-medical-malpractice-experience/</link>
       <pubDate>Thu, 04 Sep 2014 17:46:24 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-09-04-a-medical-malpractice-experience/</guid>
+      <guid>https://hong.im/post/a-medical-malpractice-experience/</guid>
       <description>我希望能尽量以比较客观的态度来谈论这件事情。
 事情经过： 我妈妈因为子宫肌瘤在8月4号，于本区的地区中心医院妇科，也是本区唯一的三甲医院完成了子宫肌瘤切除手术。完成手术后，主治医生把纱布遗留在我妈妈体内（似乎是子宫附近，非医疗专业不是很确定），造成8月4号至9月1号期间我妈妈一直有恶臭分泌物，浑身无力（严重到吃饭的时候没有力气把碗端起来，只能拿的动筷子，期间几乎没法上台阶。），且浑身疼痛。反正我在家那两天休息的很差，身体状况非常糟糕，而且据说我走以后情况还继续恶化。
 因为身体不适，我妈妈在8月21日到该医院复查，该医院没发现这个问题，而是给我妈开了治疗胃疼的药。
@@ -62,10 +62,10 @@ rpm -i /path/to/the/rpm  相关的文件会被解压到上一步新建的文件�
     
     <item>
       <title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title>
-      <link>https://hong.im/post/2014-07-08-use-ipset-with-shadowsocks-on-openwrt/</link>
+      <link>https://hong.im/post/use-ipset-with-shadowsocks-on-openwrt/</link>
       <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-07-08-use-ipset-with-shadowsocks-on-openwrt/</guid>
+      <guid>https://hong.im/post/use-ipset-with-shadowsocks-on-openwrt/</guid>
       <description>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。
 使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。
 本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。
@@ -78,10 +78,10 @@ kmod: failed to insert /lib/modules/3.10.44/ip_set.ko kmod: failed to insert /li
     
     <item>
       <title>配置一台基于openWRT的路由器使用shadowsocks并智能穿墙</title>
-      <link>https://hong.im/post/2014-03-16-configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</link>
+      <link>https://hong.im/post/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</link>
       <pubDate>Sun, 16 Mar 2014 21:07:48 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-03-16-configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</guid>
+      <guid>https://hong.im/post/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</guid>
       <description>本文开始写作时中使用的路由器为TP-LINK WR841N（D）V7（with openwrt 12.09 稳定版），到这次更新时已经换为了水星 4530R （with openwrt trunk）
 在路由器上使用shadowsocks的优势： 0. 效率比较高，在我的不严谨测试中效率比ipsec和pptp都略高。 1. 目前为止比较稳定（较少受到干扰）而且比较安全。 2. 服务器端和客户端的配置都相对来说比较简单，不容易出错。 3. 路由器下面的所有设备都可以0配置自动穿墙，你懂的。 4. 相比goagent（基本阵亡？默哀）而言，要求的包都很小。
 劣势 0. 暂时没有发现。（是的。本来的问题我貌似解决了。）
@@ -98,10 +98,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>如是我闻</title>
-      <link>https://hong.im/post/2014-02-26-as-what-i-see/</link>
+      <link>https://hong.im/post/as-what-i-see/</link>
       <pubDate>Wed, 26 Feb 2014 22:26:09 +0000</pubDate>
       
-      <guid>https://hong.im/post/2014-02-26-as-what-i-see/</guid>
+      <guid>https://hong.im/post/as-what-i-see/</guid>
       <description>还在县城的时候，就听说村长去世了。不过直到回到老家，看到田野上的那个土石垒起来的小包，盖满的花圈被雨水淋过，只剩一片惨白。在坟包的不远处散落一地火炮纸红的刺眼。我才算是有了真真切切的认识。
 我母亲给我说，你看，村长就埋在那里。
 村长是一个怎样的人呢？在我印象中，给我的感觉一直是邋邋遢遢的样子，他身上的衣服破旧不说，还总是给人一种没洗干净的样子。他的女人，跟他一样，穿的破破烂烂。鼻涕流出来，用手横着一下就擦掉了。用我们那的话说，叫打“huan（横）锤”。村长夫人总是两只手拖着她的孙子，也不管她孙子舒不舒服。她的孙子的衣服也是很脏，衣服“像覆了一层黑锅巴”。但是她的孙子有一双很特别的眼睛，黑的发亮。每次被那双眼睛看到，都觉得好像被他看穿了前生后世，因果轮回。
@@ -132,10 +132,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>时光·漫步</title>
-      <link>https://hong.im/post/2013-12-15-miss-someone/</link>
+      <link>https://hong.im/post/miss-someone/</link>
       <pubDate>Sun, 15 Dec 2013 23:56:07 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-12-15-miss-someone/</guid>
+      <guid>https://hong.im/post/miss-someone/</guid>
       <description>还记得在高中的时候，特别喜欢在黄昏时候，倚着窗户，看着外面的高楼大厦。
 彩灯一个个打开，点亮各种建筑的轮廓。然后又关闭，再打开。像天上的星星一样，一闪一闪。
 后来去很远的地方读大学，坐着火车，穿越崇山峻岭，然后突然就看到了窗外亮起了点点的昏黄灯光，点缀在漆黑的夜幕下。
@@ -153,10 +153,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>雨一直下</title>
-      <link>https://hong.im/post/2013-12-15-rain-drop-on-the-world/</link>
+      <link>https://hong.im/post/rain-drop-on-the-world/</link>
       <pubDate>Sun, 15 Dec 2013 15:43:36 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-12-15-rain-drop-on-the-world/</guid>
+      <guid>https://hong.im/post/rain-drop-on-the-world/</guid>
       <description>一个人撑着伞走在雨中，看着冰冷的雨下在这个冰冷的世界。
 我看到石护栏上的苔藓，在辛苦的生长，即使在这个寒冷的冬天，也努力的要绽放出一点不一样的色彩。
 即使无人为它喝彩，甚至连偶尔眼神的逗留都欠奉。
@@ -178,10 +178,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>在Linux下面批量修改文件名字以及内容</title>
-      <link>https://hong.im/post/2013-10-27-edit-a-batch-of-files-in-linux/</link>
+      <link>https://hong.im/post/edit-a-batch-of-files-in-linux/</link>
       <pubDate>Sun, 27 Oct 2013 15:39:41 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-10-27-edit-a-batch-of-files-in-linux/</guid>
+      <guid>https://hong.im/post/edit-a-batch-of-files-in-linux/</guid>
       <description>众所周知，sed和awk被称为Linux系统维护的两大瑞士军刀，但是一直没学会……最近遇到批量修改文件的场合，用到了sed，所以记录一下。
 批量修改文件名字 for i in `ls`; do mv -f $i `echo $i | sed &#39;s/oldstring/newstring/&#39;`; done  其实上面已经不算是一个语句了，而是通过for循环一个个的取出所有文件名达到遍历的效果。 基本原理是使用echo取得文件名，交给sed替换字符串然后把结果（也就是新的文件名）作为参数回传给mv。 需要注意的是，在shell里面把命令运行结果当作参数引用时，是需要用到 `` （键盘esc下面那个键）把需要引用的部分包围起来的。
 批量替换文件内容 sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep -rl oldstring /path/to/dir`  这个其实蛮简单的。说下sed的几个参数。
@@ -190,10 +190,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>《历史是什么》读后感</title>
-      <link>https://hong.im/post/2013-08-30-a-review-of-what-is-history/</link>
+      <link>https://hong.im/post/a-review-of-what-is-history/</link>
       <pubDate>Fri, 30 Aug 2013 22:49:25 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-08-30-a-review-of-what-is-history/</guid>
+      <guid>https://hong.im/post/a-review-of-what-is-history/</guid>
       <description>作为历史研究的经典著作，卡尔从各种方面诠释了历史到底是什么的问题。从我的理解来看，包括下面这些东西：
 1.我们所接触到的历史其实并不等同于“过去的事”，而是由历史学家根据自己的理解，选取加工后呈现的部分事实，而且通常掺杂了历史学家的个人思想在里面。进一步因为人是作为社会的个体，所以事实上，历史的呈现与历史学家所处的环境，时代也息息相关。
 2.历史事实不光应该关注孤立的个人行为，同时还需要关注到社群的普遍现象。时代的伟人既是历史进程的产物，也是历史进程的推动者，因此值得额外关注。
@@ -212,10 +212,10 @@ ln -s /usr/lib/libpolarssl.</description>
     
     <item>
       <title>配置一台基于openwrt的无线路由器作为纯无线AP使用</title>
-      <link>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</link>
+      <link>https://hong.im/post/confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</link>
       <pubDate>Mon, 05 Aug 2013 13:46:38 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-08-05-confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</guid>
+      <guid>https://hong.im/post/confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</guid>
       <description>什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
 无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
 对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。
@@ -231,10 +231,10 @@ config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后�
     
     <item>
       <title>教师实践案例自我反思与总结</title>
-      <link>https://hong.im/post/2013-06-16-self-examination-of-teaching-career/</link>
+      <link>https://hong.im/post/self-examination-of-teaching-career/</link>
       <pubDate>Sun, 16 Jun 2013 22:42:31 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-06-16-self-examination-of-teaching-career/</guid>
+      <guid>https://hong.im/post/self-examination-of-teaching-career/</guid>
       <description>除了应付研究生作业以外，其实自己也蛮想写一个文章来总结一下自己这两年来在教学上的跌跌撞撞已经可能获取的一些感悟吧。
 “优生”和“差生”之间的区别 首先其实我要感谢学校给我这个机会，在高一上学期，让我带了两个“尖子班”和两个“平行班”。这让我有机会来横向比较这两个比较典型集体之间的差别。当然就这样说优生和差生不是很恰当的说法，我们这里只是针对学生的学习成绩进行的划分。除此之外，知乎上面一个关于为什么中小学成绩比较优秀的原因的问题也给我启发很大。
 那“优生”和“差生”的区别在哪儿呢？
@@ -252,10 +252,10 @@ config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后�
     
     <item>
       <title>一台基于APU的HTPC</title>
-      <link>https://hong.im/post/2013-06-13-an-apu-based-htpc/</link>
+      <link>https://hong.im/post/an-apu-based-htpc/</link>
       <pubDate>Thu, 13 Jun 2013 09:30:25 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-06-13-an-apu-based-htpc/</guid>
+      <guid>https://hong.im/post/an-apu-based-htpc/</guid>
       <description>一、概述 本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。
 二、硬件 使用到的硬件如下：
  主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～） 机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299 内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价） 硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188 硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价） 遥控器：挥挥鼠M3 价格：￥158（已降价） 键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99 电源：本地电脑城买的最便宜的电源 价格：￥99  合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。
@@ -269,10 +269,10 @@ config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后�
     
     <item>
       <title>一小撮不明真相的群众</title>
-      <link>https://hong.im/post/2013-05-12-the-crowd-unaware-of-the-truth/</link>
+      <link>https://hong.im/post/the-crowd-unaware-of-the-truth/</link>
       <pubDate>Sun, 12 May 2013 21:53:08 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-05-12-the-crowd-unaware-of-the-truth/</guid>
+      <guid>https://hong.im/post/the-crowd-unaware-of-the-truth/</guid>
       <description>我们先关注两条消息：
 “大家注意！今天是腾讯新任董事长陈佳明上任，他为了感谢广大QQ用户，只要把这个消息连发五个群，你就会连升4级。反正也没什么坏处，发完10秒钟，看看你的头像。”
 然后是这条消息：
@@ -288,10 +288,10 @@ config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后�
     
     <item>
       <title>高流量大并发Linux TCP 性能调优</title>
-      <link>https://hong.im/post/2013-04-20-linux-tcp-tuning/</link>
+      <link>https://hong.im/post/linux-tcp-tuning/</link>
       <pubDate>Sat, 20 Apr 2013 00:23:43 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-04-20-linux-tcp-tuning/</guid>
+      <guid>https://hong.im/post/linux-tcp-tuning/</guid>
       <description>呃……标题比较隐晦。其实主要是手里面的跑openvpn服务器。因为并没有明文禁p2p（哎……想想那么多流量好像不跑点p2p也跑不完），所以造成有的时候如果有比较多人跑BT的话，会造成VPN速度急剧下降。
 本文参考文章为：
 优化Linux下的内核TCP参数来提高服务器负载能力
@@ -306,10 +306,10 @@ fs.file-max = 51200 #提高整个系统的文件限制 net.ipv4.tcp_syncookies =
     
     <item>
       <title>2012年春期总结</title>
-      <link>https://hong.im/post/2012-05-24-2012-spring-summarize/</link>
+      <link>https://hong.im/post/spring-summarize/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-05-24-2012-spring-summarize/</guid>
+      <guid>https://hong.im/post/spring-summarize/</guid>
       <description>转眼这个学期已经过了一大半了。距离学期结束还只有一个月时间。外面的布告栏已经贴出了期末考试的安排。于是怎么说都觉得这学期已经是快过了的样子。
 回顾一下这一学期吧，感觉终于还是摆脱了上一学期那种基本上迷茫基本上没有方向的状态。但是教学上依然不明朗，班主任工作也感觉没那么给力。结果就是最近几次考试，化学垫底，就连班级总体情况也是垫底。哎。
 但是还是有很多事情感觉需要总结一下。
@@ -322,10 +322,10 @@ fs.file-max = 51200 #提高整个系统的文件限制 net.ipv4.tcp_syncookies =
     
     <item>
       <title>ATI显卡高清视频播放</title>
-      <link>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</link>
+      <link>https://hong.im/post/video-acceleration-on-e350-apu/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-10-13-video-acceleration-on-e350-apu/</guid>
+      <guid>https://hong.im/post/video-acceleration-on-e350-apu/</guid>
       <description>前一个月手痒没忍住，入了AMD的E350 APU平台，主板加电源加硬盘加机箱一共花了1K左右，作为一个30W多一点的HTPC+NAS解决方案感觉还是不错的。至于装配过程就没啥好说的了，就一块板子插上电源拧上螺丝。走线神码的，乃们自己去看chiphell上面那些大神耍帅吧。
 既然要作为NAS，显然跑Linux就是一个合理的选择了，不过地球人都知道Linux下的高清硬解神码的，跟Windows比就是战斗力只有5的渣渣啊。
 废话不多说，ATI的开源显卡驱动并不支持高清视频硬解，当然它可能在不久的将来到来，不过，你就翘着脖子等着吧。另外不要相信之前文章说高清视频播放开源驱动比闭源驱动开硬解资源占用要低。我如果用开源驱动只能勉强搞定720P。1080P。哦买噶。完全是幻灯片啊。
@@ -338,10 +338,10 @@ XBMC: XBMC与VLC类似，但是能搞定那两个REMUX的ts文件。另外我开
     
     <item>
       <title>StoryTime</title>
-      <link>https://hong.im/post/2012-09-03-storytime/</link>
+      <link>https://hong.im/post/storytime/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-09-03-storytime/</guid>
+      <guid>https://hong.im/post/storytime/</guid>
       <description>前一篇各种理性的文章写了1千多字夭折了。所以这篇文章果断流水帐算了，理性什么的。最劳累了。
 一边听着夜愿的StoryTime一边码字。那天去买耳机，我说我听夜愿，那个小哥说，你还听啊，自从换了主唱我就再也没听过了。之所以还抓着不放，只是因为每次听到都想到T姐离开，往昔已然随风吧。
 就跟文艺小青年失恋以后，虽然明知道昨日不可追，但是还是不断泥足深陷。仅仅是因为怀恋昔日美好而已。
@@ -359,10 +359,10 @@ The End Of An Era。
     
     <item>
       <title>在CentOS上搭建pptp服务器并使用radius进行账户认证</title>
-      <link>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
+      <link>https://hong.im/post/set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2013-01-04-set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
+      <guid>https://hong.im/post/set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
       <description>感觉主流的VPN服务器里面pptp应该是最简单的了。总结下吧。本来没想搞这个的。可惜ipv4下的openvpn根本就是被我伟大的防火墙秒杀。所以先配个用着吧。
 系统环境：centos 6.3 x86_64 xen虚拟机（我会炫耀说是樱花的么 = =）
 安装相关软件 首先需要安装ppp和pptp以及radius认证库radiusclient-ng，ppp和radiusclient-ng在官方源里面有，所以直接安装就行了：
@@ -377,10 +377,10 @@ option /etc/ppp/options.pptpd #下面是指定服务器使用的IP localip 192.<
     
     <item>
       <title>在wr841n上刷openwrt并使用openvpn自动VPN</title>
-      <link>https://hong.im/post/2012-11-03-openvpn-on-wr841n-with-openwrt/</link>
+      <link>https://hong.im/post/openvpn-on-wr841n-with-openwrt/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-11-03-openvpn-on-wr841n-with-openwrt/</guid>
+      <guid>https://hong.im/post/openvpn-on-wr841n-with-openwrt/</guid>
       <description>刚出来工作就买了一个WR841ND。最开始其实没咋倒腾，因为dd-wrt虽然功能多但是用到的不多，反而配置太多看着头晕，而开始倒腾openwrt的时候又觉得openwrt的界面太难看&amp;mdash;不想动。所以其实一直是官方固件。不过最近由于斯巴达的即将召开，导致Google搜索基本上来讲完全瘫痪，而恰好又买了一个香港的VPS。所以决定倒腾倒腾让路由器直接连VPN然后智能路由。
 硬件信息：TP-Link TL-WR841ND v7.1
 注意：一下操作要求一定的linux基础和一定动手能力，所以请务必谋定而动。
@@ -396,10 +396,10 @@ config interface &#39;wan&#39; option ifname &#39;eth1&#39; option proto &#39;pp
     
     <item>
       <title>林纳斯 Just For Fun读书笔记</title>
-      <link>https://hong.im/post/2012-11-04-some-thoughts-about-linus-just-for-fun/</link>
+      <link>https://hong.im/post/some-thoughts-about-linus-just-for-fun/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-11-04-some-thoughts-about-linus-just-for-fun/</guid>
+      <guid>https://hong.im/post/some-thoughts-about-linus-just-for-fun/</guid>
       <description>刚看完林纳斯自传，于是来交读书笔记。
 对一本传记说什么文字优美情节曲折似乎都是不合适的吧。但是这确实是一本很有趣的传记，因为林纳斯是一个很有趣的人。因为他的价值观很有趣。
 他把人的追求分为了生存，社会关系，和寻找乐趣。毋庸置疑，保证生存是一切的基础，当人类还是动物的时候，就已经为这个目标而奋斗不止了。但是当我们能活下来，高枕无忧的时候呢？
@@ -413,10 +413,10 @@ config interface &#39;wan&#39; option ifname &#39;eth1&#39; option proto &#39;pp
     
     <item>
       <title>环形使者观后感</title>
-      <link>https://hong.im/post/2012-12-22-review-looper/</link>
+      <link>https://hong.im/post/review-looper/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-12-22-review-looper/</guid>
+      <guid>https://hong.im/post/review-looper/</guid>
       <description>本来准备看完睡一觉然后参加集体腐败。结果躺下接了个电话就再也睡不着了，于是干脆起来把影评写了算了。
 环形使者其实还是炒了下时空穿越，这一个科幻界经久不衰而又老掉牙的剧情。
 我感觉这里面最重要的一个概念就是，闭环。为什么叫闭环呢？从布鲁斯威利斯那段话我们可以得出一个结论，事实上，对于一个穿越的人来说，他穿越回他的“当下”以后，那么这段时间就成为了一种各种可能都存在的“模糊”，但是一旦“闭环”成功，那对于这个人而言，这段时间就成为一个环，只要一直保证闭环成功，那么这段时间就一直是一个封闭的回路，不会有其他的可能发生。也就是说，闭环其实是把多种可能变成只有唯一事实。
@@ -427,10 +427,10 @@ config interface &#39;wan&#39; option ifname &#39;eth1&#39; option proto &#39;pp
     
     <item>
       <title>阿里布达年代祭终于完结了（附下载）</title>
-      <link>https://hong.im/post/2012-10-31-a-novel/</link>
+      <link>https://hong.im/post/a-novel/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hong.im/post/2012-10-31-a-novel/</guid>
+      <guid>https://hong.im/post/a-novel/</guid>
       <description>作为一个小学四年级开始就已经学会从图书馆借鬼故事在回家路上打发时间的正牌宅男来说。自以为看过的小说其实已经不少了。至今留下映像最深的，有从高中一直看到大学才看完的诛仙，整整连载了四年，可惜公认后面烂尾了。然后是刘慈欣的《三体》，作为中国近代科幻的奠基之作，应该说近期的长篇科幻小说也应该无出其右者。但是同样很可惜的是，大家公认在第三部刘慈欣也同样没有HOLD住。至于出了两部就直接夭折的《风月大陆》，现在回想起来里面庞大的设定和展开，也只有遗憾的份了。 但是今天终于知道，连载了十一年的《阿里布达年代祭》终于是落下帷幕了。
 最开始看阿里，我记得是在什么“四十部情色小说，绝对查禁”里面看到的，所以有的时候还真得感谢各种有关部门给我们列出这么详细的读书计划……-0-。最开始拿到没有在意，因为觉得展开有点混乱。直到有一次实在无聊开始看以后，才一发不可收拾。 抛开情色成分不说——很可惜我发现挖去情色成分的洁本看起来差了好多味道——阿里里面出色的想象，宏大的展开，以及罗森特色的现实与虚幻结合，都让阿里成为了一部非常有特色的小说。而且无论如何，连载十一年，完全没有明显烂尾，这本身已经是个奇迹了是吧。
 所以，无论如何，终于我可以给阿里打上一个已完结的标签了。
