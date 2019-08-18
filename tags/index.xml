@@ -7,10 +7,64 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>Copyright © 2019, Hong; all rights reserved.</copyright>
-    <lastBuildDate>Fri, 16 Aug 2019 12:33:19 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 18 Aug 2019 21:38:27 +0800</lastBuildDate>
     
 	<atom:link href="https://hong.im/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>emby</title>
+      <link>https://hong.im/tags/emby/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/emby/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nginx</title>
+      <link>https://hong.im/tags/nginx/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>plex</title>
+      <link>https://hong.im/tags/plex/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/plex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RaiDrive</title>
+      <link>https://hong.im/tags/raidrive/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/raidrive/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Solid Explorer</title>
+      <link>https://hong.im/tags/solid-explorer/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/solid-explorer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>webdav</title>
+      <link>https://hong.im/tags/webdav/</link>
+      <pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate>
+      
+      <guid>https://hong.im/tags/webdav/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>bittorrent client</title>
@@ -103,7 +157,7 @@
     </item>
     
     <item>
-      <title>OpenWRT</title>
+      <title>openwrt</title>
       <link>https://hong.im/tags/openwrt/</link>
       <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
       

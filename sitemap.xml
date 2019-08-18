@@ -3,12 +3,57 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://hong.im/tags/bittorrent-client/</loc>
-    <lastmod>2019-08-16T12:33:19+08:00</lastmod>
+    <loc>https://hong.im/tags/emby/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/nginx/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/plex/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://hong.im/posts/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/raidrive/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/solid-explorer/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/webdav/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/2019/08/%E4%BD%BF%E7%94%A8webdav%E6%9D%A5%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E5%AA%92%E4%BD%93%E6%92%AD%E6%94%BE/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/</loc>
+    <lastmod>2019-08-18T21:38:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hong.im/tags/bittorrent-client/</loc>
     <lastmod>2019-08-16T12:33:19+08:00</lastmod>
   </url>
   
@@ -28,17 +73,7 @@
   </url>
   
   <url>
-    <loc>https://hong.im/tags/</loc>
-    <lastmod>2019-08-16T12:33:19+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hong.im/tags/transmission/</loc>
-    <lastmod>2019-08-16T12:33:19+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hong.im/</loc>
     <lastmod>2019-08-16T12:33:19+08:00</lastmod>
   </url>
   

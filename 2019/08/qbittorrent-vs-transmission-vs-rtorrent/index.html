@@ -89,29 +89,29 @@
 
 <h2 id="基础对比">基础对比</h2>
 
-<ol>
+<ul>
 <li>资源占用以及下载效率： rtorrent &gt; qbittorrent &gt; transmission。</li>
-</ol>
+</ul>
 
 <p>在种子数比较少（大概1000以下）的情况下，rtorrent和qbittorrent的表现差别不是很大。根据其他人测试的数据，在种子数特别多的情况下，rtorrent能跟qbittorrent拉开差距。transmission的效率则最低，在我当前150mbps的环境下，rtorrent和qbittorrent能迅速占满带宽。而transmission即使占满带宽流量曲线也并不平滑，有比较大的波动。</p>
 
-<ol>
+<ul>
 <li>配置难度：rtorrent &gt;&gt; transmission &gt; qbittorrent。</li>
-</ol>
+</ul>
 
 <p>rtorrent之所以难配置的主要原因在于后端（rtorrent）和前端( <a href="https://github.com/Novik/ruTorrent">ruTorrent</a> 或 <a href="https://github.com/Flood-UI/flood">Flood</a> )分别都需要配置。比较好的是，从0.9.7开始rtorrent开始支持demon mode，相对之前版本要更好配置一些（老版本需要把rtorrent跑在tmux或者screen里面）。transmission由单一配置文件控制，直接编辑文件就能完成配置。而qbittorrent的绝大多数配置可以通过webUI完成，难度相对来说比transmission还要更低一些。但是——qbittorrent默认没有提供systemd的service文件，需要自己写一个，不过难度不大。另外需要注意的是Archlinux在装rtorrent和qbittorrent（仅远程使用的时候，安装qbittorrent-nox就可以）的时候，由于这两个软件本身对daemon模式支持不好，所以软件包本身不会添加相关用户，需要自己添加。</p>
 
-<ol>
+<ul>
 <li>稳定性</li>
-</ol>
+</ul>
 
 <p>从我使用的情况来看，qbittorrent相对来说稳定性要差一些，transmission稳定性尚可，rtorrent理论上来讲应该是最稳定。不过考虑到qbittorrent开发非常活跃，不稳定也是预料之中的事情。</p>
 
 <h2 id="其他方面">其他方面</h2>
 
-<ol>
+<ul>
 <li>WebUI相关。这个比好直接给结论，分开说吧。</li>
-</ol>
+</ul>
 
 <p>单论特性的丰富程度，rtorrent(与ruTorrent配合，后面简称rutorrent)要远远优于后两者。rutorrent支持媒体文件自动截图，自动解压，查看媒体信息等等。你甚至可以直接通过rutorrent把种子文件下载到本机。可以看出来，rutorrent的主要设计宗旨就是为了在服务器上大量的做种而设计的。
 另外，rtorrent的两个主流webUI（rutorrent和flood）对移动端支持都很不错。不过比较可惜的是，不管是rutorrent和flood都不支持批量添加种子文件。</p>
@@ -122,9 +122,9 @@
 
 <p>另外，transmission可以通过第三方的跨平台远程控制客户端 <a href="https://github.com/transmission-remote-gui/transgui">transgui</a> 控制。transgui支持文件关联，你完全可以像操作本机上的transmission一样控制远程服务器上的transmission，这点上看，完爆前面两个。</p>
 
-<ol>
+<ul>
 <li>其他方面</li>
-</ol>
+</ul>
 
 <p>三个客户端里面只有rtorrent不支持在未完成文件后面添加后缀，如果配合Plex等流媒体服务，会带来一些困扰。另外，qbittorrent针对大包里面没有选中的文件，会放入一个隐藏文件夹中，这里特别好评。顺便说下，其实这三个软件在安卓上都有第三方客户端可以支持，但是只有Transmission的客户端功能最全。</p>
 
@@ -133,6 +133,8 @@
 <p>最后，之所以没有讨论deluge，主要是国内一些主流的PT站点并不支持deluge，且deluge也已经停止开发好长时间了。而没有讨论utorrent的主要原因是，我目前的主要平台是Linux，目前为止utorrent还没有Linux下的客户端。</p>
 
 <p>综上，下面列一个表吧：</p>
+
+<hr />
 
 <table>
 <thead>
