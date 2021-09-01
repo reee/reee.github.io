@@ -1,0 +1,55 @@
+baseURL = "https://hong.im/"
+DefaultContentLanguage = "zh" # Theme's display language, supports: en, fr, zh, zh-hant
+languageCode = "zh-CN"
+title = "北落师门"
+copyright = "This is a customized copyright."
+theme = "diary"
+googleAnalytics = "UA-11520870-2"
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = false
+    hl_Lines = ""
+    lineNoStart = 1
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = true
+    style = "perldoc"
+    tabWidth = 4
+
+[params]
+subtitle = "墙里秋千墙外道。墙外行人 墙里佳人笑。"
+enableGitalk = false
+
+# Twitter Card and Open Graph settings
+enableOpenGraph = true
+enableTwitterCards = true
+title = "北落师门" # will set 'og:site_name'
+description = "墙里秋千墙外道。墙外行人 墙里佳人笑。"  # will set 'og:description'
+
+[params.gitalk]
+  owner = "zzz"
+  repo = "repo name"
+  client_id = "your client id"
+  client_secret = "your client secret"
+[taxonomies]
+   tag = "tags"
+   category = "categories"
+
+[[menu.main]]
+url = "/categories"
+name = "分类"
+weight = 2
+[[menu.main]]
+url = "/tags"
+name = "标签"
+weight = 3
+[[menu.main]]
+url = "/posts"
+name = "归档"
+weight = 1
+[[menu.main]]
+url = "/index.xml"
+name = "RSS Feed"
+weight = 4
