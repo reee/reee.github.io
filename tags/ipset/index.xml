@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ipset on 北落师门</title>
+    <link>https://hong.im/tags/ipset/</link>
+    <description>Recent content in ipset on 北落师门</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>Copyright © 2019, Hong; all rights reserved.</copyright>
+    <lastBuildDate>Tue, 08 Jul 2014 15:55:59 +0000</lastBuildDate>
+    
+	<atom:link href="https://hong.im/tags/ipset/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title>
+      <link>https://hong.im/2014/07/%E4%BD%BF%E7%94%A8ipset%E8%AE%A9openwrt%E4%B8%8A%E7%9A%84shadowsocks%E6%9B%B4%E6%99%BA%E8%83%BD%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E6%B5%81%E9%87%8F/</link>
+      <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
+      
+      <guid>https://hong.im/2014/07/%E4%BD%BF%E7%94%A8ipset%E8%AE%A9openwrt%E4%B8%8A%E7%9A%84shadowsocks%E6%9B%B4%E6%99%BA%E8%83%BD%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E6%B5%81%E9%87%8F/</guid>
+      <description>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。
+使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。
+本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。
+本文包括三个部分： 0. 安装相应软件包 2. 配置dnsmasq和ipset 3. 【可选】使用pdnsd获取更优的解析结果。 4. DEBUG
+一、安装需要的软件包 需要从外部下载以后安装的： shadowsocks：推荐从http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/ 下载。 · 我的做法是下载下来在本地用nginx建一个http服务器，然后在路由器上去wget。另外的普遍做法是用winscp直接上传到路由器，共参考选择。
+开始安装：
+opkg update //安装前必须更新包数据库缓存。 opkg install ipset iptables-mod-nat-extra opkg install dnsmasq-full --force-overwrite //官方提供的dnsmasq-full提供了ipset相关 的功能，需要加后面的参数进行强制覆盖安装。  某些 版本ipset安装后会报类似下面的错误：
+kmod: failed to insert /lib/modules/3.10.44/ip_set.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ip.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ipmac.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_port.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ip.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipport.ko kmod: failed to insert /lib/modules/3.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="https://hong.im/">
+<meta name="author" content="Hong">
+
+<meta name="generator" content="Hugo 0.57.1" />
+<title>在centOS 7上面，从源码包重新编译软件包</title>
+<link rel="shortcut icon" href="https://hong.im/images/favicon.ico" type="">
+<link rel="stylesheet" href="https://hong.im/css/style.css">
+<link rel="stylesheet" href="https://hong.im/css/highlight.css">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+<link href="https://hong.im/index.xml" rel="alternate" type="application/rss+xml" title="北落师门" />
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@https://twitter.com/_zzzh">
+  <meta name="twitter:creator" content="@https://twitter.com/_zzzh">
+
+
+<meta property="og:title" content="在centOS 7上面，从源码包重新编译软件包">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hong.im/">
+
+
+  <meta property="og:image" content="https://hong.im//images/onepress-logo.jpg">
+
+
+
+
+<link rel="canonical" href="https://hong.im/post/rebuild-from-srpm-on-centos-7/">
+
+    </head>
+<body>
+	  <header class="header">
+			<img src="https://hong.im/images/logo.png" alt="">
+
+		</header>
+    <nav class="main-nav">
+        <ul>
+    <li class="active"><a href='https://hong.im/'>Articles</a></li>
+    <li><a href='https://hong.im/about'>About</a></li>
+    
+</ul>
+
+    </nav>
+    
+    
+    
+    
+    <div id="site-wrapper-centered">
+        <main class="center">
+            
+  <article class="single">
+    <h1>在centOS 7上面，从源码包重新编译软件包</h1>
+    <section class="extras">
+        <span class="tags">
+          <small class="time">December 27, 2015</small>
+          
+             , posted under 
+             
+                <a href="https://hong.im/tags/centos-7">Centos 7</a>
+             
+                <a href="https://hong.im/tags/%E7%BC%96%E8%AF%91">编译</a>
+             
+                <a href="https://hong.im/tags/%E6%BA%90%E7%A0%81%E5%8C%85">源码包</a>
+             
+          
+        </span>
+    </section>
+    <section class="description">
+      
+    </section>
+    
+    <section id="content" class="body">
+        
+
+<p>众所周知，ocserv需要重新编译才能支持比较详细的路由设置。这里简单总结一下如何在centOS 7 上面，从srpm出发，重新编译RPM包。</p>
+
+<p>基本参考的资料就是官方的构建环境搭建指南和RPM重构指南：
+<a href="https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment">https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment</a>
+<a href="https://wiki.centos.org/HowTos/RebuildSRPM">https://wiki.centos.org/HowTos/RebuildSRPM</a></p>
+
+<h2 id="搭建构建环境">搭建构建环境</h2>
+
+<ol>
+<li><p>首先安装必备的软件包：</p>
+
+<p>yum install rpm-build redhat-rpm-config make gcc</p></li>
+
+<li><p>建立相应的用户，并切换到相应用户：</p>
+
+<p>user add mockbuild
+su mockbuild</p></li>
+</ol>
+
+<p>需要注意的是，官方建议不使用root账户来进行编译，而看起来EPEL默认的编译用户是mockbuild，上一步建立任意非root账户其实也可以但是可能会在安装srpm的时候遇到类似于下面的警告：</p>
+
+<pre><code>warning: user mockbuild does not exist - using root
+warning: group mockbuild does not exist - using root
+</code></pre>
+
+<p>从个人实践的情况来看，似乎上面的警告也不会影响最后的编译，所以看你自己咯。</p>
+
+<ol>
+<li><p>建立相应的文件夹：</p>
+
+<p>mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}</p></li>
+
+<li><p>设定RPM build变量：</p>
+
+<p>echo &lsquo;%_topdir %(echo $HOME)/rpmbuild&rsquo; &gt; ~/.rpmmacros</p></li>
+</ol>
+
+<h2 id="取得源代码包进行重编译">取得源代码包进行重编译</h2>
+
+<p>以epel为例，可以从这里取得对应的SRPM：
+<a href="https://dl.fedoraproject.org/pub/epel/7/SRPMS/">https://dl.fedoraproject.org/pub/epel/7/SRPMS/</a></p>
+
+<p>将对应的SRPM下载下来，然后使用rpm进行安装：</p>
+
+<pre><code>rpm -i /path/to/the/rpm
+</code></pre>
+
+<p>相关的文件会被解压到上一步新建的文件夹。</p>
+
+<p>以ocserv为例，我们需要更改源码包中的vpn.h。所以需要先从SOURCES目录下的ocserv-0.10.8.tar.xz解压出源码，修改vpn.h以后打包回去：</p>
+
+<pre><code>cd SOURCES
+tar -Jxf ocserv-0.10.8.tar.xz
+rm ocserv-0.10.8.tar.xz
+tar -Jcf ocserv-0.10.8.tar.xz ocserv-0.10.8/
+</code></pre>
+
+<p>然后重新编译rpm包：</p>
+
+<pre><code>rpmbuild -ba SPECS/ocserv.spec
+</code></pre>
+
+<p>然后在RPMS下就会生成对应的rpm包了。</p>
+
+    </section> 
+    
+    
+     
+  </article>
+  
+<div class="share-card">
+    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fhong.im%2fpost%2frebuild-from-srpm-on-centos-7%2f - %e5%9c%a8centOS%207%e4%b8%8a%e9%9d%a2%ef%bc%8c%e4%bb%8e%e6%ba%90%e7%a0%81%e5%8c%85%e9%87%8d%e6%96%b0%e7%bc%96%e8%af%91%e8%bd%af%e4%bb%b6%e5%8c%85 by @https%3a%2f%2ftwitter.com%2f_zzzh"><i class="fa fa-twitter"></i> Tweet</a>
+
+    <a class="facebook" href="#" onclick="
+        window.open(
+          'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+          'facebook-share-dialog',
+          'width=626,height=436');
+        return false;"><i class="fa fa-facebook"></i> Share
+    </a>
+</div>
+
+
+ 
+  
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'reee';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        </main>
+        <footer id="footer">
+    <p class="small">
+      Copyright © 2019, Hong; all rights reserved.
+    </p>
+</footer>
+    </div>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://hong.im/js/main.js"></script>
+<script src="https://hong.im/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', ' ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+</body>
+</html>

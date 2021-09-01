@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="https://hong.im/">
+<meta name="author" content="Hong">
+
+<meta name="generator" content="Hugo 0.57.1" />
+<title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title>
+<link rel="shortcut icon" href="https://hong.im/images/favicon.ico" type="">
+<link rel="stylesheet" href="https://hong.im/css/style.css">
+<link rel="stylesheet" href="https://hong.im/css/highlight.css">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+<link href="https://hong.im/index.xml" rel="alternate" type="application/rss+xml" title="北落师门" />
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@https://twitter.com/_zzzh">
+  <meta name="twitter:creator" content="@https://twitter.com/_zzzh">
+
+
+<meta property="og:title" content="使用ipset让openwrt上的shadowsocks更智能的重定向流量">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hong.im/">
+
+
+  <meta property="og:image" content="https://hong.im//images/onepress-logo.jpg">
+
+
+
+
+<link rel="canonical" href="https://hong.im/post/use-ipset-with-shadowsocks-on-openwrt/">
+
+    </head>
+<body>
+	  <header class="header">
+			<img src="https://hong.im/images/logo.png" alt="">
+
+		</header>
+    <nav class="main-nav">
+        <ul>
+    <li class="active"><a href='https://hong.im/'>Articles</a></li>
+    <li><a href='https://hong.im/about'>About</a></li>
+    
+</ul>
+
+    </nav>
+    
+    
+    
+    
+    <div id="site-wrapper-centered">
+        <main class="center">
+            
+  <article class="single">
+    <h1>使用ipset让openwrt上的shadowsocks更智能的重定向流量</h1>
+    <section class="extras">
+        <span class="tags">
+          <small class="time">July 8, 2014</small>
+          
+             , posted under 
+             
+                <a href="https://hong.im/tags/openwrt">openwrt</a>
+             
+                <a href="https://hong.im/tags/shadowsocks">shadowsocks</a>
+             
+                <a href="https://hong.im/tags/ipset">ipset</a>
+             
+          
+        </span>
+    </section>
+    <section class="description">
+      
+    </section>
+    
+    <section id="content" class="body">
+        
+
+<p>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。</p>
+
+<p>使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。</p>
+
+<p>本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。</p>
+
+<p>本文包括三个部分：
+0. 安装相应软件包
+2. 配置dnsmasq和ipset
+3. 【可选】使用pdnsd获取更优的解析结果。
+4. DEBUG</p>
+
+<h2 id="一-安装需要的软件包">一、安装需要的软件包</h2>
+
+<p>需要从外部下载以后安装的：
+shadowsocks：推荐从<a href="http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/">http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/</a> 下载。
+·
+我的做法是下载下来在本地用nginx建一个http服务器，然后在路由器上去wget。另外的普遍做法是用winscp直接上传到路由器，共参考选择。</p>
+
+<p>开始安装：</p>
+
+<pre><code>opkg update //安装前必须更新包数据库缓存。
+opkg install ipset iptables-mod-nat-extra
+opkg install dnsmasq-full --force-overwrite //官方提供的dnsmasq-full提供了ipset相关 的功能，需要加后面的参数进行强制覆盖安装。
+</code></pre>
+
+<p><strong>某些</strong> 版本ipset安装后会报类似下面的错误：</p>
+
+<pre><code>kmod: failed to insert /lib/modules/3.10.44/ip_set.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ipmac.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_port.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipport.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipportip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipportnet.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_net.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_netiface.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_netport.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_list_set.ko
+kmod: failed to insert /lib/modules/3.10.44/xt_set.ko
+</code></pre>
+
+<p>需要重新启动以后ipset 才能正常使用。</p>
+
+<p>这里假设你已经下好上文中的dnsmasq和shadowsocks并且进入了存放这两个文件的文件夹。</p>
+
+<p>安装shadowsocks：</p>
+
+<pre><code>opkg install shadowsocks-libev-polarssl_1.4.5_ar71xx.ipk
+</code></pre>
+
+<p>新版本不需要处理libpolarssl的问题，老版本shadowsocks编译的时候链接的是libpolarssl.so.5，所以我们需要做一个libpolarssl.so.5软链接出来，否则shadowsocks不能启动且不会有任何报错。</p>
+
+<pre><code>ln -s /usr/lib/libpolarssl.so  /usr/lib/libpolarssl.so.5
+</code></pre>
+
+<p>同时你需要自行编辑下/etc/shadowsocks.json，把正确的shadowsocks服务器信息填进去。</p>
+
+<p>另外因为我们需要用到的是ss-redir而不是ss-local。所以请用编辑器打开/etc/init.d/shadowsocks 然后把里面所有的ss-local全部换成ss-redir（一共两处），然后：</p>
+
+<pre><code>/etc/init.d/shadowsocks enable //让shadowsocks自动启动
+</code></pre>
+
+<p>考虑到之前ipset的问题。到这里我们先重启一下吧，咱们重启以后见 丷丷。</p>
+
+<h2 id="二-配置dnsmasq和ipset">二、配置dnsmasq和ipset</h2>
+
+<p>我们先用ipset创建一个set，这里我创建的set名字为setmefree（没有逼格啊没有逼格）,然后将这个set中所有IP均转发到shadowsocks（这里本机的shadowsocks监听的是默认的1080端口）。
+建议将下面的命令写入 /etc/rc.local 。每次开机自动运行。</p>
+
+<pre><code>ipset -N setmefree iphash
+iptables -t nat -A PREROUTING -p tcp -m set --match-set setmefree dst -j REDIRECT --to-port 1080
+</code></pre>
+
+<p>设置 dnsmasq 对某些域名使用opendns进行解析并且加入setmefree这个set：
+为了保持配置文件整洁，建议在 /etc/dnsmasq.conf 最后加入：</p>
+
+<pre><code>conf-dir=/etc/dnsmasq.d
+</code></pre>
+
+<p>然后新建目录 /etc/dnsmasq.d ，在里面加入一个 conf，名字任选。譬如 /etc/dnsmasq.d/fuckgfw.conf , 下面是我的文件内容，你可以按自己需要整理自己的：</p>
+
+<p>#Google and Youtube
+server=/.google.com/208.67.222.222#443
+server=/.google.com.hk/208.67.222.222#443
+server=/.gstatic.com/208.67.222.222#443
+server=/.ggpht.com/208.67.222.222#443
+server=/.google.com/208.67.222.222#443
+server=/.google.com.hk/208.67.222.222#443
+server=/.gstatic.com/208.67.222.222#443
+server=/.ggpht.com/208.67.222.222#443
+server=/.googleusercontent.com/208.67.222.222#443
+server=/.appspot.com/208.67.222.222#443
+server=/.googlecode.com/208.67.222.222#443
+server=/.googleapis.com/208.67.222.222#443
+server=/.gmail.com/208.67.222.222#443
+server=/.google-analytics.com/208.67.222.222#443
+server=/.youtube.com/208.67.222.222#443
+server=/.googlevideo.com/208.67.222.222#443
+server=/.youtube-nocookie.com/208.67.222.222#443
+server=/.ytimg.com/208.67.222.222#443
+server=/.blogspot.com/208.67.222.222#443
+server=/.blogger.com/208.67.222.222#443
+server=/.google.co.jp/208.67.222.222#443
+server=/.google.co.uk/208.67.222.222#443</p>
+
+<p>#FaceBook
+server=/.facebook.com/208.67.222.222#443
+server=/.thefacebook.com/208.67.222.222#443
+server=/.facebook.net/208.67.222.222#443
+server=/.fbcdn.net/208.67.222.222#443
+server=/.akamaihd.net/208.67.222.222#443</p>
+
+<p>#Twitter
+server=/.twitter.com/208.67.222.222#443
+server=/.t.co/208.67.222.222#443
+server=/.bitly.com/208.67.222.222#443
+server=/.twimg.com/208.67.222.222#443
+server=/.tinypic.com/208.67.222.222#443
+server=/.yfrog.com/208.67.222.222#443</p>
+
+<p>#Dropbox
+server=/.dropbox.com/208.67.222.222#443</p>
+
+<p>#1024
+server=/.t66y.com/208.67.222.222#443</p>
+
+<p>#shadowsocks.org
+server=/.shadowsocks.org/208.67.222.222#443</p>
+
+<p>#btdigg
+server=/.btdigg.org/208.67.222.222#443</p>
+
+<p>#sf.net
+server=/.sourceforge.net/208.67.222.222#443</p>
+
+<p>#feedly
+server=/.feedly.com/208.67.222.222#443</p>
+
+<p>#github and fastly
+server=/.github.com/208.67.222.222#443
+server=/.fastly.com/208.67.222.222#443</p>
+
+<p>#wikipedia
+server=/.wikipedia.org/208.67.222.222#443
+server=/.wikimedia.org/208.67.222.222#443
+server=/.wiktionary.org/208.67.222.222#443</p>
+
+<p>#xda
+server=/.xda-developers.com/208.67.222.222#443</p>
+
+<h1 id="here-comes-the-ipset">Here Comes The ipset</h1>
+
+<p>#Google and Youtube
+ipset=/.google.com/setmefree
+ipset=/.google.com.hk/setmefree
+ipset=/.gstatic.com/setmefree
+ipset=/.ggpht.com/setmefree
+ipset=/.googleusercontent.com/setmefree
+ipset=/.appspot.com/setmefree
+ipset=/.googlecode.com/setmefree
+ipset=/.googleapis.com/setmefree
+ipset=/.gmail.com/setmefree
+ipset=/.google-analytics.com/setmefree
+ipset=/.youtube.com/setmefree
+ipset=/.googlevideo.com/setmefree
+ipset=/.youtube-nocookie.com/setmefree
+ipset=/.ytimg.com/setmefree
+ipset=/.blogspot.com/setmefree
+ipset=/.blogger.com/setmefree
+ipset=/.google.co.jp/setmefree
+ipset=/.google.co.uk/setmefree</p>
+
+<p>#FaceBook
+ipset=/.facebook.com/setmefree
+ipset=/.thefacebook.com/setmefree
+ipset=/.facebook.net/setmefree
+ipset=/.fbcdn.net/setmefree
+ipset=/.akamaihd.net/setmefree</p>
+
+<p>#Twitter
+ipset=/.twitter.com/setmefree
+ipset=/.t.co/setmefree
+ipset=/.bitly.com/setmefree
+ipset=/.twimg.com/setmefree
+ipset=/.tinypic.com/setmefree
+ipset=/.yfrog.com/setmefree</p>
+
+<p>#Dropbox
+ipset=/.dropbox.com/setmefree</p>
+
+<p>#1024
+ipset=/.t66y.com/setmefree</p>
+
+<p>#shadowsocks.org
+ipset=/.shadowsocks.org/setmefree</p>
+
+<p>#btdigg
+ipset=/.btdigg.org/setmefree</p>
+
+<p>#sf.net
+ipset=/.sourceforge.net/setmefree</p>
+
+<p>#feedly
+ipset=/.feedly.com/setmefree</p>
+
+<p>#github&amp;fastly
+ipset=/.github.com/setmefree
+ipset=/.fastly.com/setmefree</p>
+
+<p>#wikipedia
+ipset=/.wikipedia.org/setmefree
+ipset=/.wikimedia.org/setmefree
+ipset=/.wiktionary.org/setmefree</p>
+
+<p>#xda
+ipset=/.xda-developers.com/setmefree</p>
+
+<p>注意：
+1. 目前公共DNS有opendns监听非标准端口（443和5353），你也可以到这里查看由opennic提供的DNS：<a href="http://meo.ws/dnsrec.php">http://meo.ws/dnsrec.php</a> （均监听以下端口54, 443, 1053, 1194, 5353, 8080，27015），当然你也可以自己建DNS服务器。关于DNS优化的讨论请参考下一节。
+2. 每条记录都需要跟一条ipset设置，不要忘了。</p>
+
+<p>然后重启 dnsmasq：</p>
+
+<pre><code>/etc/init.d/dnsmasq restart
+</code></pre>
+
+<p>或者直接重新启动，顺便测试rc.local中的命令有没有成功运行。</p>
+
+<h2 id="三-可选-使用pdnsd获取更优的解析结果">三、【可选】使用pdnsd获取更优的解析结果。</h2>
+
+<p>注意：通过上面的配置您的openwrt穿墙已经应该正常了，下面仅作优化方面的讨论。</p>
+
+<p>由于opendns是根据来源IP给出结果，导致的结果是直接在路由器上查询返回的是对应中国的IP，以youtube为例：</p>
+
+<pre><code>dig www.youtube.com @208.67.222.222 -p 443
+</code></pre>
+
+<p>给出的其中一个结果为：173.194.72.102，在VPS上ping（你应该能理解，所有过shadowsocks的流量事实上是由VPS中转的，所以我们测试的是VPS与该IP的连接情况）约<strong>33ms</strong>。而换用VPS当地的DNS可以将延迟降到<strong>1.45ms</strong>左右。个人认为还是很有意义的。当然其实如果不怕麻烦自建DNS是最好啦。</p>
+
+<p>关于pdnsd的配置请参考<a href="http://hong.im/2014/03/16/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/">上一篇</a>。</p>
+
+<h2 id="四-debug">四、DEBUG</h2>
+
+<ol>
+<li><p>通过下面的命令查看set中的IP，这样可以确定解析是否正常，并且查看某网站是否正确的被加到了ipset：</p>
+
+<p>ipset list setmefree</p></li>
+</ol>
+
+<p>通过下面的命令可以清理掉set中所有ip。更多的ipset用法请查看<em>ipset help</em></p>
+
+<pre><code>ipset flush setmefree
+</code></pre>
+
+<ol>
+<li><p>以daemon模式运行shadowsocks前建议先试一下确保配置文件无误：</p>
+
+<p>ss-redir -c /etc/shadowsocks.json</p></li>
+</ol>
+
+<h2 id="更新记录">更新记录：</h2>
+
+<p>2015年8月9日 修正一些说法，更新DNS配置文件。</p>
+
+    </section> 
+    
+    
+     
+  </article>
+  
+<div class="share-card">
+    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fhong.im%2fpost%2fuse-ipset-with-shadowsocks-on-openwrt%2f - %e4%bd%bf%e7%94%a8ipset%e8%ae%a9openwrt%e4%b8%8a%e7%9a%84shadowsocks%e6%9b%b4%e6%99%ba%e8%83%bd%e7%9a%84%e9%87%8d%e5%ae%9a%e5%90%91%e6%b5%81%e9%87%8f by @https%3a%2f%2ftwitter.com%2f_zzzh"><i class="fa fa-twitter"></i> Tweet</a>
+
+    <a class="facebook" href="#" onclick="
+        window.open(
+          'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+          'facebook-share-dialog',
+          'width=626,height=436');
+        return false;"><i class="fa fa-facebook"></i> Share
+    </a>
+</div>
+
+
+ 
+  
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'reee';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        </main>
+        <footer id="footer">
+    <p class="small">
+      Copyright © 2019, Hong; all rights reserved.
+    </p>
+</footer>
+    </div>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://hong.im/js/main.js"></script>
+<script src="https://hong.im/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', ' ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+</body>
+</html>
