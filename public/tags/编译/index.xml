@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>编译 on 北落师门</title>
+    <link>https://hong.im/tags/%E7%BC%96%E8%AF%91/</link>
+    <description>Recent content in 编译 on 北落师门</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>This is a customized copyright.</copyright>
+    <lastBuildDate>Sun, 27 Dec 2015 11:32:36 +0000</lastBuildDate><atom:link href="https://hong.im/tags/%E7%BC%96%E8%AF%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在centOS 7上面，从源码包重新编译软件包</title>
+      <link>https://hong.im/posts/rebuild-from-srpm-on-centos-7/</link>
+      <pubDate>Sun, 27 Dec 2015 11:32:36 +0000</pubDate>
+      
+      <guid>https://hong.im/posts/rebuild-from-srpm-on-centos-7/</guid>
+      <description>众所周知，ocserv需要重新编译才能支持比较详细的路由设置。这里简单总结一下如何在centOS 7 上面，从srpm出发，重新编译RPM包。
+基本参考的资料就是官方的构建环境搭建指南和RPM重构指南： https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment https://wiki.centos.org/HowTos/RebuildSRPM
+搭建构建环境   首先安装必备的软件包：
+yum install rpm-build redhat-rpm-config make gcc
+  建立相应的用户，并切换到相应用户：
+user add mockbuild su mockbuild
+  需要注意的是，官方建议不使用root账户来进行编译，而看起来EPEL默认的编译用户是mockbuild，上一步建立任意非root账户其实也可以但是可能会在安装srpm的时候遇到类似于下面的警告：
+warning: user mockbuild does not exist - using root warning: group mockbuild does not exist - using root  从个人实践的情况来看，似乎上面的警告也不会影响最后的编译，所以看你自己咯。
+ 建立相应的文件夹：
+mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+  设定RPM build变量：
+echo &amp;lsquo;%_topdir %(echo $HOME)/rpmbuild&amp;rsquo; &amp;gt; ~/.rpmmacros
+  取得源代码包进行重编译 以epel为例，可以从这里取得对应的SRPM： https://dl.fedoraproject.org/pub/epel/7/SRPMS/
+将对应的SRPM下载下来，然后使用rpm进行安装：
+rpm -i /path/to/the/rpm  相关的文件会被解压到上一步新建的文件夹。</description>
+    </item>
+    
+  </channel>
+</rss>

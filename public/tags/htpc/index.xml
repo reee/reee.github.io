@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HTPC on 北落师门</title>
+    <link>https://hong.im/tags/htpc/</link>
+    <description>Recent content in HTPC on 北落师门</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>This is a customized copyright.</copyright>
+    <lastBuildDate>Thu, 13 Jun 2013 09:30:25 +0000</lastBuildDate><atom:link href="https://hong.im/tags/htpc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一台基于APU的HTPC</title>
+      <link>https://hong.im/posts/an-apu-based-htpc/</link>
+      <pubDate>Thu, 13 Jun 2013 09:30:25 +0000</pubDate>
+      
+      <guid>https://hong.im/posts/an-apu-based-htpc/</guid>
+      <description>一、概述 本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。
+二、硬件 使用到的硬件如下：
+ 主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～） 机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299 内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价） 硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188 硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价） 遥控器：挥挥鼠M3 价格：￥158（已降价） 键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99 电源：本地电脑城买的最便宜的电源 价格：￥99  合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。
+个人认为优势在于：
+ 系统自由度更高一些，可以自主选择Linux或者Windows。 采用魔方机箱的好处在于盘位较多，可以自由升级。而且散热什么的也比较给力。 采用APU一体板的好处在于，在能耗相对较低的情况（没有实测，但是整机功耗应该在30W左右）下，用比较低的价格做到了HTPC和NAS的合体。  优势其实一句话说到底就是自由度吧……DIY的，谁不是想自由度高一些呢……
+相对来说，因为全部采用新硬件，可能性价比并不是那么突出。当然肯定是可以通过旧硬件重用或者淘宝二手CPU什么的做到更高的性价比。不过一是图一个新，另一个是新硬件相对来说功耗更低一点（没有考虑过Intel平台，求不喷），要更稳定一些……
+三、软件解决方案 1、系统：Windows 8 在一开始尝试过蛮多系统（好吧，就是win 7，Win 8 和一堆linux发行版），其实如果主要应用是NAS，Linux应该是一个很不错的选择，但是一旦涉及到高清播放……我只能说Linux完完全全是渣渣啊。不过随着AMD发布开源 UVD 支持，Linux下面的高清播放支持倒是值得期待（表示我还没有尝试。）
+然后win7 和win 8之间，因为个人认为win 8的欢迎屏幕更适合我的电视……加上win 8确实有一些驱动，性能上的提升，所以最终确定下来就是win 8了。
+2、视频播放：PotPlayer+XBMC 这里采用XBMC解决在线视频播放的问题。为了播放国内视频网站的视频，XBMC中文插件库是一定要安装的，请自行参考：xbmc-addons-chinese。除此之外，XBMC还真没啥好说的……不过优酷，搜获超清什么的，在我的51寸大电视上那是相当爽啊。
+然后采用Potplayer解决本地高清视频播放的问题。这里多说一句，本来PotPlayer国内有一个非常不错的交流论坛：(http://potplayer.5d6d.net/) ，可惜随着5D6D官方宣布不再提供免费论坛服务，实在是前途未卜呢。</description>
+    </item>
+    
+    <item>
+      <title>ATI显卡高清视频播放</title>
+      <link>https://hong.im/posts/video-acceleration-on-e350-apu/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hong.im/posts/video-acceleration-on-e350-apu/</guid>
+      <description>前一个月手痒没忍住，入了AMD的E350 APU平台，主板加电源加硬盘加机箱一共花了1K左右，作为一个30W多一点的HTPC+NAS解决方案感觉还是不错的。至于装配过程就没啥好说的了，就一块板子插上电源拧上螺丝。走线神码的，乃们自己去看chiphell上面那些大神耍帅吧。
+既然要作为NAS，显然跑Linux就是一个合理的选择了，不过地球人都知道Linux下的高清硬解神码的，跟Windows比就是战斗力只有5的渣渣啊。
+废话不多说，ATI的开源显卡驱动并不支持高清视频硬解，当然它可能在不久的将来到来，不过，你就翘着脖子等着吧。另外不要相信之前文章说高清视频播放开源驱动比闭源驱动开硬解资源占用要低。我如果用开源驱动只能勉强搞定720P。1080P。哦买噶。完全是幻灯片啊。
+闭源驱动搞得比较纠结，安装就按Arch的官方wiki 来的。不过当真正开始硬解的时候有一点点小问题：
+smplayer：我使用官方源中的mplayer-vaapi极易崩溃。基本无法使用，如果使用mplayer2的话，则又不能开启硬解。所以虽然我也很喜欢smplayer但是……不给面子没办法……
+vlc: VLC则能够轻松搞定1080p重编码（CPU占用两个核心都稳定在50%），但是10BIT会出现大量色块，其中包括德艺双馨的波多野结衣的那个4G多的mp4文件。要搞定vlc的硬解，arch WIKI上的并不完整，还需要额外参考VLC关于硬解的官方文档 修改一下环境变量。具体文档说的挺清楚了不再赘述，不过你并不需要重新编译ffmpeg和vlc，也就是只需要添加好环境变量就好。我的所有视频中有两个REMUX的ts文件播放出来是黑屏莫名其妙。
+XBMC: XBMC与VLC类似，但是能搞定那两个REMUX的ts文件。另外我开始XBMC莫名其妙没有声音很是奇怪。
+总而言之，E350集成显卡的硬件加速也就算是恰好凑合能用吧。有兴趣的自己倒腾倒腾。我下一步开始配置transmission，samba和dnsmasq了。</description>
+    </item>
+    
+  </channel>
+</rss>

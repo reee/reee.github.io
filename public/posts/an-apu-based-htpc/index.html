@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html><head>
+<title>一台基于APU的HTPC</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="一台基于APU的HTPC" />
+<meta property="og:description" content="一、概述 本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。
+二、硬件 使用到的硬件如下：
+ 主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～） 机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299 内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价） 硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188 硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价） 遥控器：挥挥鼠M3 价格：￥158（已降价） 键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99 电源：本地电脑城买的最便宜的电源 价格：￥99  合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。
+个人认为优势在于：
+ 系统自由度更高一些，可以自主选择Linux或者Windows。 采用魔方机箱的好处在于盘位较多，可以自由升级。而且散热什么的也比较给力。 采用APU一体板的好处在于，在能耗相对较低的情况（没有实测，但是整机功耗应该在30W左右）下，用比较低的价格做到了HTPC和NAS的合体。  优势其实一句话说到底就是自由度吧……DIY的，谁不是想自由度高一些呢……
+相对来说，因为全部采用新硬件，可能性价比并不是那么突出。当然肯定是可以通过旧硬件重用或者淘宝二手CPU什么的做到更高的性价比。不过一是图一个新，另一个是新硬件相对来说功耗更低一点（没有考虑过Intel平台，求不喷），要更稳定一些……
+三、软件解决方案 1、系统：Windows 8 在一开始尝试过蛮多系统（好吧，就是win 7，Win 8 和一堆linux发行版），其实如果主要应用是NAS，Linux应该是一个很不错的选择，但是一旦涉及到高清播放……我只能说Linux完完全全是渣渣啊。不过随着AMD发布开源 UVD 支持，Linux下面的高清播放支持倒是值得期待（表示我还没有尝试。）
+然后win7 和win 8之间，因为个人认为win 8的欢迎屏幕更适合我的电视……加上win 8确实有一些驱动，性能上的提升，所以最终确定下来就是win 8了。
+2、视频播放：PotPlayer&#43;XBMC 这里采用XBMC解决在线视频播放的问题。为了播放国内视频网站的视频，XBMC中文插件库是一定要安装的，请自行参考：xbmc-addons-chinese。除此之外，XBMC还真没啥好说的……不过优酷，搜获超清什么的，在我的51寸大电视上那是相当爽啊。
+然后采用Potplayer解决本地高清视频播放的问题。这里多说一句，本来PotPlayer国内有一个非常不错的交流论坛：(http://potplayer.5d6d.net/) ，可惜随着5D6D官方宣布不再提供免费论坛服务，实在是前途未卜呢。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hong.im/posts/an-apu-based-htpc/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-06-13T09:30:25+00:00" />
+<meta property="article:modified_time" content="2013-06-13T09:30:25+00:00" /><meta property="og:site_name" content="北落师门" />
+
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="一台基于APU的HTPC"/>
+<meta name="twitter:description" content="一、概述 本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。
+二、硬件 使用到的硬件如下：
+ 主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～） 机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299 内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价） 硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188 硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价） 遥控器：挥挥鼠M3 价格：￥158（已降价） 键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99 电源：本地电脑城买的最便宜的电源 价格：￥99  合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。
+个人认为优势在于：
+ 系统自由度更高一些，可以自主选择Linux或者Windows。 采用魔方机箱的好处在于盘位较多，可以自由升级。而且散热什么的也比较给力。 采用APU一体板的好处在于，在能耗相对较低的情况（没有实测，但是整机功耗应该在30W左右）下，用比较低的价格做到了HTPC和NAS的合体。  优势其实一句话说到底就是自由度吧……DIY的，谁不是想自由度高一些呢……
+相对来说，因为全部采用新硬件，可能性价比并不是那么突出。当然肯定是可以通过旧硬件重用或者淘宝二手CPU什么的做到更高的性价比。不过一是图一个新，另一个是新硬件相对来说功耗更低一点（没有考虑过Intel平台，求不喷），要更稳定一些……
+三、软件解决方案 1、系统：Windows 8 在一开始尝试过蛮多系统（好吧，就是win 7，Win 8 和一堆linux发行版），其实如果主要应用是NAS，Linux应该是一个很不错的选择，但是一旦涉及到高清播放……我只能说Linux完完全全是渣渣啊。不过随着AMD发布开源 UVD 支持，Linux下面的高清播放支持倒是值得期待（表示我还没有尝试。）
+然后win7 和win 8之间，因为个人认为win 8的欢迎屏幕更适合我的电视……加上win 8确实有一些驱动，性能上的提升，所以最终确定下来就是win 8了。
+2、视频播放：PotPlayer&#43;XBMC 这里采用XBMC解决在线视频播放的问题。为了播放国内视频网站的视频，XBMC中文插件库是一定要安装的，请自行参考：xbmc-addons-chinese。除此之外，XBMC还真没啥好说的……不过优酷，搜获超清什么的，在我的51寸大电视上那是相当爽啊。
+然后采用Potplayer解决本地高清视频播放的问题。这里多说一句，本来PotPlayer国内有一个非常不错的交流论坛：(http://potplayer.5d6d.net/) ，可惜随着5D6D官方宣布不再提供免费论坛服务，实在是前途未卜呢。"/>
+
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-11520870-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<script src="/vendor/js/vue.min.js" ></script>
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://hong.im/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css" integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://hong.im/scss/dark-mode.min.c0082f0b082177f6fb3768ff91439a097de49689bd26f4d49f76d94ebb81e02d.css" integrity="sha256-wAgvCwghd/b7N2j/kUOaCX3klom9JvTUn3bZTruB4C0=" media="screen">
+
+
+<script src="/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+
+
+  
+    <script src="/js/toc.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div ref="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://hong.im/">
+    
+        <div class="nav-title">
+            北落师门
+        </div>
+        
+        <div class="nav-subtitle">
+            墙里秋千墙外道。墙外行人 墙里佳人笑。
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                归档
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分类
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                标签
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	This is a customized copyright.
+	
+
+    </div>
+    
+</div><div ref="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#一概述-nav`)" id="一概述-nav">
+									一、概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8c%e7%a1%ac%e4%bb%b6" onclick="onNavClick(`#二硬件-nav`)" id="二硬件-nav">
+									二、硬件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%89%e8%bd%af%e4%bb%b6%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88" onclick="onNavClick(`#三软件解决方案-nav`)" id="三软件解决方案-nav">
+									三、软件解决方案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1%e7%b3%bb%e7%bb%9fwindows-8" onclick="onNavClick(`#1系统windows-8-nav`)" id="1系统windows-8-nav">
+									1、系统：Windows 8
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#2%e8%a7%86%e9%a2%91%e6%92%ad%e6%94%bepotplayerxbmc" onclick="onNavClick(`#2视频播放potplayerxbmc-nav`)" id="2视频播放potplayerxbmc-nav">
+									2、视频播放：PotPlayer&#43;XBMC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#3%e9%9f%b3%e9%a2%91%e6%92%ad%e6%94%befoobar2000" onclick="onNavClick(`#3音频播放foobar2000-nav`)" id="3音频播放foobar2000-nav">
+									3、音频播放：foobar2000
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#4bt%e4%b8%8b%e8%bd%bdutorrent" onclick="onNavClick(`#4bt下载utorrent-nav`)" id="4bt下载utorrent-nav">
+									4、BT下载：utorrent
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a class="pagination-action" v-on:click="toggleDarkMode">
+            <i class="material-icons pagination-action-icon" v-if="isDarkMode">
+                brightness_4
+            </i>
+            <i class="material-icons pagination-action-icon" v-else="isDarkMode">
+                brightness_7
+            </i>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" ref="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    归档
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分类
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    标签
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e4%b8%80%e6%a6%82%e8%bf%b0" onclick="onNavClick(`#一概述-nav`)" id="一概述-nav">
+									一、概述
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%ba%8c%e7%a1%ac%e4%bb%b6" onclick="onNavClick(`#二硬件-nav`)" id="二硬件-nav">
+									二、硬件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%89%e8%bd%af%e4%bb%b6%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88" onclick="onNavClick(`#三软件解决方案-nav`)" id="三软件解决方案-nav">
+									三、软件解决方案
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#1%e7%b3%bb%e7%bb%9fwindows-8" onclick="onNavClick(`#1系统windows-8-nav`)" id="1系统windows-8-nav">
+									1、系统：Windows 8
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#2%e8%a7%86%e9%a2%91%e6%92%ad%e6%94%bepotplayerxbmc" onclick="onNavClick(`#2视频播放potplayerxbmc-nav`)" id="2视频播放potplayerxbmc-nav">
+									2、视频播放：PotPlayer&#43;XBMC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#3%e9%9f%b3%e9%a2%91%e6%92%ad%e6%94%befoobar2000" onclick="onNavClick(`#3音频播放foobar2000-nav`)" id="3音频播放foobar2000-nav">
+									3、音频播放：foobar2000
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#4bt%e4%b8%8b%e8%bd%bdutorrent" onclick="onNavClick(`#4bt下载utorrent-nav`)" id="4bt下载utorrent-nav">
+									4、BT下载：utorrent
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="https://hong.im/">
+            北落师门
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" v-on:click="toggleDarkMode">
+            <i class="material-icons" v-if="isDarkMode">
+                brightness_4
+            </i>
+            <i class="material-icons" v-else="isDarkMode">
+                brightness_7
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://hong.im/">
+        <div class="single-column-header-title">北落师门</div>
+        
+        <div class="single-column-header-subtitle">墙里秋千墙外道。墙外行人 墙里佳人笑。</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    一台基于APU的HTPC
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2013-06-13 09:30
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/htpc">HTPC</a>
+                                &nbsp;
+                            
+                                <a href="/tags/apu">APU</a>
+                                &nbsp;
+                            
+                                <a href="/tags/potplayer">PotPlayer</a>
+                                &nbsp;
+                            
+                                <a href="/tags/xbmc">XBMC</a>
+                                &nbsp;
+                            
+                                <a href="/tags/foobar2000">foobar2000</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="一概述">一、概述</h2>
+<p>本文主要定位于如何获得一个可工作的基于APU的HTPC，本文使用的硬件组装于2012年9月16，所以对各位而言，有可能硬件信息已经比较过时。</p>
+<h2 id="二硬件">二、硬件</h2>
+<p>使用到的硬件如下：</p>
+<ul>
+<li>主板：华擎 双核APU平台E350M1（集成AMD E-350 双核1.6G CPU，集成ATI Radeon HD6310显卡） 价格：￥505（含快递15块～）</li>
+<li>机箱：酷冷至尊 魔方 MINI-ITX小机箱USB3.0拉丝铝面板 价格：￥299</li>
+<li>内存：南亚易胜（elixir）DDR3 1333 4G 台式机内存 价格：￥99（已大幅涨价）</li>
+<li>硬盘1：镁光 32G 固态硬盘 SSD 1.8寸半高 价格：￥188</li>
+<li>硬盘2：希捷2TB 2T硬盘64M 7200转 ST2000DM001台式机硬盘 价格：￥660（已大幅降价）</li>
+<li>遥控器：挥挥鼠M3 价格：￥158（已降价）</li>
+<li>键盘鼠标：Logitech 罗技 MK240 无线键鼠套装 价格：￥99</li>
+<li>电源：本地电脑城买的最便宜的电源 价格：￥99</li>
+</ul>
+<p>合计：2107。败笔感觉在那小块固态硬盘上……感觉没太大必要。同时在有遥控器的情况下，无线键鼠套装基本就是在角落积灰，也没太大必要。这套系统的性能瓶颈应该在CPU上……真是……伤神呢。不过那个遥控器还真是满好用的，推荐。</p>
+<p>个人认为优势在于：</p>
+<ul>
+<li>系统自由度更高一些，可以自主选择Linux或者Windows。</li>
+<li>采用魔方机箱的好处在于盘位较多，可以自由升级。而且散热什么的也比较给力。</li>
+<li>采用APU一体板的好处在于，在能耗相对较低的情况（没有实测，但是整机功耗应该在30W左右）下，用比较低的价格做到了HTPC和NAS的合体。</li>
+</ul>
+<p>优势其实一句话说到底就是自由度吧……DIY的，谁不是想自由度高一些呢……</p>
+<p>相对来说，因为全部采用新硬件，可能性价比并不是那么突出。当然肯定是可以通过旧硬件重用或者淘宝二手CPU什么的做到更高的性价比。不过一是图一个新，另一个是新硬件相对来说功耗更低一点（没有考虑过Intel平台，求不喷），要更稳定一些……</p>
+<h2 id="三软件解决方案">三、软件解决方案</h2>
+<h3 id="1系统windows-8">1、系统：Windows 8</h3>
+<p>在一开始尝试过蛮多系统（好吧，就是win 7，Win 8 和一堆linux发行版），其实如果主要应用是NAS，Linux应该是一个很不错的选择，但是一旦涉及到高清播放……我只能说Linux完完全全是渣渣啊。不过随着<a href="http://linuxtoy.org/archives/amd-releases-open-source-uvd-support.html">AMD发布开源 UVD 支持</a>，Linux下面的高清播放支持倒是值得期待（表示我还没有尝试。）</p>
+<p>然后win7 和win 8之间，因为个人认为win 8的欢迎屏幕更适合我的电视……加上win 8确实有一些驱动，性能上的提升，所以最终确定下来就是win 8了。</p>
+<h3 id="2视频播放potplayerxbmc">2、视频播放：PotPlayer+XBMC</h3>
+<p>这里采用<a href="http://xbmc.org/download/">XBMC</a>解决在线视频播放的问题。为了播放国内视频网站的视频，XBMC中文插件库是一定要安装的，请自行参考：<a href="https://code.google.com/p/xbmc-addons-chinese/">xbmc-addons-chinese</a>。除此之外，XBMC还真没啥好说的……不过优酷，搜获超清什么的，在我的51寸大电视上那是相当爽啊。</p>
+<p>然后采用<a href="http://pan.baidu.com/share/link?shareid=536881&amp;uk=2636462713">Potplayer</a>解决本地高清视频播放的问题。这里多说一句，本来PotPlayer国内有一个非常不错的交流论坛：(<a href="http://potplayer.5d6d.net/">http://potplayer.5d6d.net/</a>) ，可惜随着5D6D官方宣布不再提供免费论坛服务，实在是前途未卜呢。</p>
+<p>推荐的滤镜组合为：</p>
+<ul>
+<li>源分离滤镜： <a href="https://code.google.com/p/lavfilters/">LAV Splitter</a></li>
+<li>视频解码滤镜： <a href="https://code.google.com/p/lavfilters/">LAV Video Decoder</a></li>
+<li>视频渲染： 高清视频 EVR(CP)，低清晰度视频 <a href="http://forum.doom9.org/showthread.php?t=146228">MadVR</a></li>
+</ul>
+<p>源分离滤镜没啥好说的，其实PotPlayer目前自带的源分离滤镜已经能够提供比较好的拖放性能了，这个随意吧。</p>
+<p>至于视频解码滤镜LAV Video Decoder的理由，主要是相对其他视频滤镜来说，LAV Video Decoder 一是开源免费，二是开发活跃，三是支持各种硬解方式。从我用下来的情况看，也比较稳定，没什么严重BUG。</p>
+<p>而视频渲染其实如果性能足够当然是完全推荐MadVR一路走到黑的。不过因为组的HTPC性能太差……采用MadVR打开高清（720P以上）视频需要等待较长时间而且容易假死。所以只能退而求其次使用EVR(CP)。不过说起来，高清的视频上MadVR区别肉眼倒是满难看出来，但是如果视频本身质量比较差，采用MadVR可以很明显的观察到视频锐度和色彩还原度的大幅提升。所以MadVR非常推荐啦。</p>
+<h3 id="3音频播放foobar2000">3、音频播放：foobar2000</h3>
+<p>基本上Windows平台上音频播放的选择是唯一的吧：<a href="http://www.foobar2000.org/">foobar2000</a>，采用到的插件有：</p>
+<ul>
+<li>DTS解码支持：<a href="http://www.foobar2000.org/components/view/foo_input_dts">DTS Decoder</a></li>
+<li>WASAPI 输出支持：<a href="http://www.foobar2000.org/components/view/foo_out_wasapi">WASAPI output support</a></li>
+<li>ape解码支持：<a href="http://www.foobar2000.org/components/view/foo_input_monkey">Monkey&rsquo;s Audio Decoder</a></li>
+<li>HTTP远程控制，因为主要是配合Android上的一个程序foobarcon使用，所以直接从foobarcon主页下载最新的：<a href="https://sites.google.com/site/foobarcon/">foobar2000 http control</a></li>
+</ul>
+<p>WASAPI输出可以感觉到有明显的音质提升，不过我那小破音箱……不过因为WASAPI是独占的，所以在打开其他需要声音输出的程序时，必须将foobar2000完全停止或者退出。</p>
+<p>而http control除了可以使用手机上的foobarcon控制以外，还可以从其他电脑的浏览器控制，请自行查看项目主页：<a href="https://code.google.com/p/foo-httpcontrol/">foo-httpcontrol</a>。说起来foobarcon真心不错，还可以在手机端显示歌词而且基本上都能抓取……一个人寂寞的在家K歌什么的毫无鸭梨了。</p>
+<h3 id="4bt下载utorrent">4、BT下载：utorrent</h3>
+<p>Windows下BT下载的选择也比较唯一：<a href="http://www.utorrent.com/">utorrent</a>。</p>
+<p>需要注意的是：</p>
+<ul>
+<li>utorrent 3去广告：将 设置 - 高级 中的offers.sponsored_torrent_offer_enabled改为false重启</li>
+<li>启用远程控制：展开 设置 - 高级 - 远程 。勾选启用网页界面，在下面输入用户名，密码。你可以在下面定义端口和下载目录。自己倒腾吧。</li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">最后修改于 2013-06-13</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://hong.im/posts/self-examination-of-teaching-career/">
+			下回<br>教师实践案例自我反思与总结
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://hong.im/posts/the-crowd-unaware-of-the-truth/">
+			上回<br>一小撮不明真相的群众
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	This is a customized copyright.
+	
+</div>
+            </div>
+    <script>
+let app;
+
+app = new Vue({
+    el: '#app',
+    data: {
+        scrollY: 0,
+        navOpacity: 0,
+        isDrawerOpen: false,
+        mounted: false,
+        isDarkMode: false
+    },
+    methods: {
+            sgn(t, x) {
+                let k = 1. / (1. - 2 * t);
+                if (x <= t) return 0;
+                else if (x >= 1 - t) return 1;
+                else {
+                    return k * (x - t);
+                }
+            },
+            handleScroll() {
+                this.scrollY = window.scrollY;
+                this.navOpacity = this.sgn(.0, Math.min(1, Math.max(0, window.scrollY / (this.pageHeadHeight() - this.navBarHeight() * 0.8))));
+                const {navBar, navBackground, navTitle, extraContainer, streamContainer} = this.$refs;
+
+                if (this.navOpacity >= 1) {
+                    navBackground.style.opacity = 1;
+                    navTitle.style.opacity = 1;
+                } else {
+                    navBackground.style.opacity = 0;
+                    navTitle.style.opacity = 0;
+                }
+            },
+            handleResize() {
+                const {navBar, navBackground, navTitle, extraContainer, streamContainer} = this.$refs;
+                extraContainer.style.left = (streamContainer.offsetWidth - extraContainer.offsetWidth) + 'px';
+            },
+            navBarHeight() {
+                return this.$refs.navBar.offsetHeight;
+            },
+            pageHeadHeight() {
+                return this.$refs.pageHead.offsetHeight;
+            },
+            toggleDrawer() {
+                this.isDrawerOpen = !this.isDrawerOpen;
+                document.getElementsByTagName('html')[0].style.overflow = this.isDrawerOpen ? 'hidden' : 'unset';
+            },
+            closeDrawer() {
+                this.isDrawerOpen = false;
+                document.getElementsByTagName('html')[0].style.overflow = this.isDrawerOpen ? 'hidden' : 'unset';
+            },
+            toggleDarkMode() {
+                this.isDarkMode = !this.isDarkMode;
+                if (this.isDarkMode==true){
+                    document.cookie = "night=1;path=/";
+                    document.body.classList.add("night");
+                } else {
+                    document.cookie = "night=0;path=/";
+                    document.body.classList.remove("night");
+                }
+            },
+            debounce(func, wait, options) {
+                let lastArgs,
+                    lastThis,
+                    maxWait,
+                    result,
+                    timerId,
+                    lastCallTime
+
+                let lastInvokeTime = 0
+                let leading = false
+                let maxing = false
+                let trailing = true
+
+                
+                const useRAF = (!wait && wait !== 0 && typeof root.requestAnimationFrame === 'function')
+
+                if (typeof func !== 'function') {
+                    throw new TypeError('Expected a function')
+                }
+                function isObject(value) {
+                    const type = typeof value
+                    return value != null && (type === 'object' || type === 'function')
+                }
+
+                wait = +wait || 0
+                if (isObject(options)) {
+                    leading = !!options.leading
+                    maxing = 'maxWait' in options
+                    maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait
+                    trailing = 'trailing' in options ? !!options.trailing : trailing
+                }
+
+                function invokeFunc(time) {
+                    const args = lastArgs
+                    const thisArg = lastThis
+
+                    lastArgs = lastThis = undefined
+                    lastInvokeTime = time
+                    result = func.apply(thisArg, args)
+                    return result
+                }
+
+                function startTimer(pendingFunc, wait) {
+                    if (useRAF) {
+                    root.cancelAnimationFrame(timerId)
+                    return root.requestAnimationFrame(pendingFunc)
+                    }
+                    return setTimeout(pendingFunc, wait)
+                }
+
+                function cancelTimer(id) {
+                    if (useRAF) {
+                    return root.cancelAnimationFrame(id)
+                    }
+                    clearTimeout(id)
+                }
+
+                function leadingEdge(time) {
+                    
+                    lastInvokeTime = time
+                    
+                    timerId = startTimer(timerExpired, wait)
+                    
+                    return leading ? invokeFunc(time) : result
+                }
+
+                function remainingWait(time) {
+                    const timeSinceLastCall = time - lastCallTime
+                    const timeSinceLastInvoke = time - lastInvokeTime
+                    const timeWaiting = wait - timeSinceLastCall
+
+                    return maxing
+                    ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+                    : timeWaiting
+                }
+
+                function shouldInvoke(time) {
+                    const timeSinceLastCall = time - lastCallTime
+                    const timeSinceLastInvoke = time - lastInvokeTime
+
+                    
+                    
+                    
+                    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+                    (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
+                }
+
+                function timerExpired() {
+                    const time = Date.now()
+                    if (shouldInvoke(time)) {
+                    return trailingEdge(time)
+                    }
+                    
+                    timerId = startTimer(timerExpired, remainingWait(time))
+                }
+
+                function trailingEdge(time) {
+                    timerId = undefined
+
+                    
+                    
+                    if (trailing && lastArgs) {
+                    return invokeFunc(time)
+                    }
+                    lastArgs = lastThis = undefined
+                    return result
+                }
+
+                function cancel() {
+                    if (timerId !== undefined) {
+                    cancelTimer(timerId)
+                    }
+                    lastInvokeTime = 0
+                    lastArgs = lastCallTime = lastThis = timerId = undefined
+                }
+
+                function flush() {
+                    return timerId === undefined ? result : trailingEdge(Date.now())
+                }
+
+                function pending() {
+                    return timerId !== undefined
+                }
+
+                function debounced(...args) {
+                    const time = Date.now()
+                    const isInvoking = shouldInvoke(time)
+
+                    lastArgs = args
+                    lastThis = this
+                    lastCallTime = time
+
+                    if (isInvoking) {
+                    if (timerId === undefined) {
+                        return leadingEdge(lastCallTime)
+                    }
+                    if (maxing) {
+                        
+                        timerId = startTimer(timerExpired, wait)
+                        return invokeFunc(lastCallTime)
+                    }
+                    }
+                    if (timerId === undefined) {
+                    timerId = startTimer(timerExpired, wait)
+                    }
+                    return result
+                }
+                debounced.cancel = cancel
+                debounced.flush = flush
+                debounced.pending = pending
+                return debounced
+                }
+
+    },
+    created() {
+        window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('resize', this.handleResize);
+        window._nonDesktop = function () {
+            let check = false;
+            (function (a) {
+                if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+            })(navigator.userAgent || navigator.vendor || window.opera);
+            return check;
+        };
+        
+        var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (night==""){
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                
+            }
+        }else{
+            
+            if (night=="1") {
+                this.toggleDarkMode();
+            }
+        }
+    },
+    mounted() {
+        this.handleScroll();
+        this.handleResize();
+        this.mounted = true;
+
+        
+        
+        
+
+        document.querySelectorAll("table").forEach(function(elem){
+            elem.classList.add("table-striped");
+            elem.classList.add("table");
+            elem.classList.add("table-responsive");
+            elem.classList.add("table-hover");
+        })
+
+        
+        spy();
+        window.addEventListener('scroll', this.debounce(spy, 250, { 'maxWait': 250 }), false);
+        
+        
+    },
+    destroyed() {
+        window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('resize', this.handleResize);
+    }
+});
+
+
+
+</script>
+    </body>
+</html>
