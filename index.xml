@@ -1,0 +1,709 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>北落师门</title><link>https://hong.im/</link><description>Recent content on 北落师门</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This is a customized copyright.</copyright><lastBuildDate>Sun, 18 Aug 2019 21:38:27 +0800</lastBuildDate><atom:link href="https://hong.im/index.xml" rel="self" type="application/rss+xml"/><item><title>使用WebDAV来实现远程媒体播放</title><link>https://hong.im/posts/use-webdav-to-deliver-media-files/</link><pubDate>Sun, 18 Aug 2019 21:38:27 +0800</pubDate><guid>https://hong.im/posts/use-webdav-to-deliver-media-files/</guid><description>北落师门 https://hong.im/posts/use-webdav-to-deliver-media-files/ -&lt;p>Plex无疑是媒体服务器中的佼佼者。作为一个商业方案，Plex比Emby及其衍生物要更加优雅一些。但是在经历过Plex某个版本会莫名其妙占满单个核心，以及不久前干脆占满所有核心导致整个服务器宕机以后。我决定借WebDAV来实现媒体服务器，而事实证明，效果非常好。&lt;/p>
+&lt;h2 id="使用webdav的优势">使用WebDAV的优势&lt;/h2>
+&lt;p>利用WebDAV的精髓在于WebDAV可以被挂载为一个本地磁盘，下面的优势其实都是基于这一事实。&lt;/p>
+&lt;ul>
+&lt;li>无需转码，因此服务器负担极低&lt;/li>
+&lt;/ul>
+&lt;p>WebDAV可以被映射为一个本地文件夹，调用本地播放器进行播放。因此不管是h.265、wmv或是其他各种奇葩编码方案，通过一个现代的本地播放器都能完美的支持播放，不存在需要转码的情况。而plex大体上是浏览器那一套解码器，绝大多数情况需要被转码为h.264才能开始播放，这就要求服务器本身具有很强的解码能力。使用Plex播放一个非h.264编码的文件，经历的流程为 服务端解码，再编码-客户端再解码播放。而如果使用WebDAV的话，直接在客户端对文件进行解码即可。&lt;/p>
+&lt;p>使用WebDAV，服务器的负担只有传输数据这一个任务，那么之前的矿渣蜗牛星际的J1900或者各位手中“价值几万”的斐讯N1就都可以轻轻松松串流几路1080P（前提是网络给力）。相对应的，（对于非h.264编码的视频）Plex要么需要GPU支持，要么需要至少i3级别的CPU才能达到实时播放的能力（参考这里： &lt;a href="https://support.plex.tv/articles/200375666-plex-media-server-requirements/">Plex Media Server Requirements&lt;/a> ），区别不可谓不大。&lt;/p>
+&lt;p>这里需要提到另外一个类似WebDAV的文件分享解决方案：&lt;a href="https://github.com/filebrowser/filebrowser">FileBrowser&lt;/a> 。由于FileBrowser也是通过浏览器提供的服务，因此也存在只要浏览器不能解码，那么该文件就没法播放的问题，局限比较大。&lt;/p>
+&lt;ul>
+&lt;li>更快开始播放&lt;/li>
+&lt;/ul>
+&lt;p>Plex在播放开始前需要客户端判断先是否支持该视频，以及判断网络情况，然后再决定是否转码以及转码的码率。如果确实需要转码，还需要一定时间等待一定时间段的视频完成转码。导致Plex需要一定的时间才能开始播放。WebDAV则只需要从服务器端读取数据就可以开始解码播放。因此WebDAV开始播放需要等待的时间要少得多。&lt;/p>
+&lt;p>&lt;strong>特别提醒&lt;/strong>：考虑到整个视频码率不是一定的，以及网络情况可能会有波动，因此建议通过WebDAV播放视频的，将播放器的缓存视频的时间长度设长一点，整个播放过程会流畅一些。从我的体验来讲，将播放器缓存时间设置为1min，基本上就不会感觉到有卡顿问题。&lt;/p>
+&lt;ul>
+&lt;li>可以配合本地的一些其他服务，增强体验&lt;/li>
+&lt;/ul>
+&lt;p>比如 &lt;a href="http://www.babelsoft.net/products/mediapreview.htm">Media Preview&lt;/a> 增强缩略图体验。或者使用 &lt;a href="https://www.voidtools.com/zh-cn/">Everything&lt;/a> 对文件进行快速检索。反正挂载在本地，我就是可以为所欲为。。。&lt;/p>
+&lt;h2 id="使用webdav相对plex的不足">使用WebDAV相对Plex的不足&lt;/h2>
+&lt;ul>
+&lt;li>媒体组织方式的缺陷&lt;/li>
+&lt;/ul>
+&lt;p>Plex毕竟是一个媒体中心，对媒体信息尤其是电影电视剧信息的刮削能力相当强，会自动为文件配上海报简介无需人工干预。这点是WebDAV这个方案无法比的。不过因为我本身对这块要求不高，所以这并不算什么致命的问题。&lt;/p>
+&lt;ul>
+&lt;li>文件体积过大以及对高码率文件支持效果欠佳&lt;/li>
+&lt;/ul>
+&lt;p>一部正常的720P电影大概是4G左右，如果直接在移动网络下播放，就是足足4G的流量消耗。另外，一个正常的4K视频码率在50mbps左右，在当前国内的网络环境下，不大可能有人能支持这么高码率视频的实时播放。而Plex因为可以在服务器端进行转码，就可以规避这两个问题。不过1080P视频普遍在10mbps左右，要正常播放并不是什么难事，所以这个缺陷也不算什么问题。&lt;/p>
+&lt;h2 id="服务器端配置">服务器端配置&lt;/h2>
+&lt;ul>
+&lt;li>相关软件的安装&lt;/li>
+&lt;/ul>
+&lt;p>现在一般习惯使用nginx来作为web服务器。通过nginx来提供WebDAV服务，需要加载dav-ext这个第三方模块。下面仅讨论使用nginx提供WebDAV服务的情况。&lt;/p>
+&lt;p>Ubuntu中，nginx-full这个包自带了dav-ext这个扩展，因此直接安装这个包即可。而arch的话，需要安装 nginx-mainline 和 nginx-mainline-mod-dav-ext。&lt;/p>
+&lt;ul>
+&lt;li>WebDAV服务的配置&lt;/li>
+&lt;/ul>
+&lt;p>配置部分可以参考 &lt;a href="https://wiki.archlinux.org/index.php/WebDAV">ArchWiki: WebDAV&lt;/a> 。配置过程分为两步：1. 是载入模块。需要注意的是，Ubuntu载入模块的方式略有不同，请参考Ubuntu的相关配置。2.是书写配置文件。由于我们需要面向整个互联网提供服务，因此配置文件需要改变一下，去掉allow，deny字段，然后加上认证部分。我的配置文件供参考：&lt;/p>
+&lt;pre>&lt;code>location /dav {
+root /srv/http;
+auth_basic &amp;quot;Auth Require&amp;quot;;
+auth_basic_user_file /etc/nginx/.htpasswd;
+dav_methods PUT DELETE MKCOL COPY MOVE;
+dav_ext_methods PROPFIND OPTIONS;
+dav_access user:rw group:rw all:r;
+client_max_body_size 0;
+create_full_put_path on;
+client_body_temp_path /srv/client-temp;
+autoindex on;
+autoindex_exact_size off;
+autoindex_localtime on;
+charset utf-8,gbk;
+}
+&lt;/code>&lt;/pre>
+&lt;p>配置文件中，是将/srv/http/dav目录分享出来，请按自己情况修改。client_body_temp_path也需要自己根据实际情况修改。另外.htpasswd文件需要自行使用htpasswd或者其他方式生成。可以参考DO的这篇文章： &lt;a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-nginx-on-ubuntu-14-04">How To Set Up Password Authentication with Nginx on Ubuntu 14.04&lt;/a>&lt;/p>
+&lt;h2 id="客户端部分">客户端部分&lt;/h2>
+&lt;p>Android上推荐使用Solid Explorer（收费软件，14天试用）挂载WebDAV文件夹。其他的Total Commander安装相关扩展以后可以正常挂载，但是无法调用本地播放器播放（事实上我猜Solid Explorer有一些小魔法在里面）。Ghost Commander界面实在一言难尽且挂载体验不佳。&lt;/p>
+&lt;p>Windows自身支持WebDAV，但是体验十分糟糕，这里推荐使用 &lt;a href="https://www.raidrive.com/">RaiDrive&lt;/a>（有收费版但事实上免费版已经够用了）挂载。由于相关配置都十分简单，这里就不多说了。&lt;/p>
+- https://hong.im/posts/use-webdav-to-deliver-media-files/ - This is a customized copyright.</description></item><item><title>Qbittorrent vs Transmission vs Rtorrent</title><link>https://hong.im/posts/qbittorrent-vs-transmission-vs-rtorrent/</link><pubDate>Fri, 16 Aug 2019 12:33:19 +0800</pubDate><guid>https://hong.im/posts/qbittorrent-vs-transmission-vs-rtorrent/</guid><description>北落师门 https://hong.im/posts/qbittorrent-vs-transmission-vs-rtorrent/ -&lt;p>一直在来回倒腾这三个客户端，所以很早就想写个总结。然后终于写出来了- 。-&lt;/p>
+&lt;h2 id="基础对比">基础对比&lt;/h2>
+&lt;ul>
+&lt;li>资源占用以及下载效率： rtorrent &amp;gt; qbittorrent &amp;gt; transmission。&lt;/li>
+&lt;/ul>
+&lt;p>在种子数比较少（大概1000以下）的情况下，rtorrent和qbittorrent的表现差别不是很大。根据其他人测试的数据，在种子数特别多的情况下，rtorrent能跟qbittorrent拉开差距。transmission的效率则最低，在我当前150mbps的环境下，rtorrent和qbittorrent能迅速占满带宽。而transmission即使占满带宽流量曲线也并不平滑，有比较大的波动。&lt;/p>
+&lt;ul>
+&lt;li>配置难度：rtorrent &amp;raquo; transmission &amp;gt; qbittorrent。&lt;/li>
+&lt;/ul>
+&lt;p>rtorrent之所以难配置的主要原因在于后端（rtorrent）和前端( &lt;a href="https://github.com/Novik/ruTorrent">ruTorrent&lt;/a> 或 &lt;a href="https://github.com/Flood-UI/flood">Flood&lt;/a> )分别都需要配置。比较好的是，从0.9.7开始rtorrent开始支持demon mode，相对之前版本要更好配置一些（老版本需要把rtorrent跑在tmux或者screen里面）。transmission由单一配置文件控制，直接编辑文件就能完成配置。而qbittorrent的绝大多数配置可以通过webUI完成，难度相对来说比transmission还要更低一些。但是——qbittorrent默认没有提供systemd的service文件，需要自己写一个，不过难度不大。另外需要注意的是Archlinux在装rtorrent和qbittorrent（仅远程使用的时候，安装qbittorrent-nox就可以）的时候，由于这两个软件本身对daemon模式支持不好，所以软件包本身不会添加相关用户，需要自己添加。&lt;/p>
+&lt;ul>
+&lt;li>稳定性&lt;/li>
+&lt;/ul>
+&lt;p>从我使用的情况来看，qbittorrent相对来说稳定性要差一些，transmission稳定性尚可，rtorrent理论上来讲应该是最稳定。不过考虑到qbittorrent开发非常活跃，不稳定也是预料之中的事情。&lt;/p>
+&lt;h2 id="其他方面">其他方面&lt;/h2>
+&lt;ul>
+&lt;li>WebUI相关。这个比好直接给结论，分开说吧。&lt;/li>
+&lt;/ul>
+&lt;p>单论特性的丰富程度，rtorrent(与ruTorrent配合，后面简称rutorrent)要远远优于后两者。rutorrent支持媒体文件自动截图，自动解压，查看媒体信息等等。你甚至可以直接通过rutorrent把种子文件下载到本机。可以看出来，rutorrent的主要设计宗旨就是为了在服务器上大量的做种而设计的。
+另外，rtorrent的两个主流webUI（rutorrent和flood）对移动端支持都很不错。不过比较可惜的是，不管是rutorrent和flood都不支持批量添加种子文件。&lt;/p>
+&lt;p>qbittorrent的webUI特性也比较丰富。你甚至可以通过qbittorrent的webUI完成ddns更新（虽然我不知道有什么意义……）。qbittorrent WebUI的最大问题是不（tai）好（chou）看，感觉像上一代的网页，毫无设计感。另外qbittorrent的移动版页面也相当不好用。qbittorrent的webUI的另一个问题在于不支持对种子内容进行排序，也没有层级结构，在筛选大包里面的文件的时候相当不便。&lt;/p>
+&lt;p>transmission比较特殊。它自带的webUI功能极少，但是可以改为 &lt;a href="https://github.com/ronggang/transmission-web-control">transmission-web-control&lt;/a> 。transmission-web-control 的特性基本跟qbittorrent相当，但是比qbittorrent的漂亮很多。不过不管是transmission自带的webUI还是transmission-web-control本身都不支持https，而且如果用nginx代理的话，则transmission就不能设置密码，只能通过nginx控制。&lt;/p>
+&lt;p>另外，transmission可以通过第三方的跨平台远程控制客户端 &lt;a href="https://github.com/transmission-remote-gui/transgui">transgui&lt;/a> 控制。transgui支持文件关联，你完全可以像操作本机上的transmission一样控制远程服务器上的transmission，这点上看，完爆前面两个。&lt;/p>
+&lt;ul>
+&lt;li>其他方面&lt;/li>
+&lt;/ul>
+&lt;p>三个客户端里面只有rtorrent不支持在未完成文件后面添加后缀，如果配合Plex等流媒体服务，会带来一些困扰。另外，qbittorrent针对大包里面没有选中的文件，会放入一个隐藏文件夹中，这里特别好评。顺便说下，其实这三个软件在安卓上都有第三方客户端可以支持，但是只有Transmission的客户端功能最全。&lt;/p>
+&lt;p>另外，这三个包如果都最小安装的话，qbittorrent的依赖最多，安装后所占体积最大，让人感觉不够优雅。&lt;/p>
+&lt;p>最后，之所以没有讨论deluge，主要是国内一些主流的PT站点并不支持deluge，且deluge也已经停止开发好长时间了。而没有讨论utorrent的主要原因是，我目前的主要平台是Linux，目前为止utorrent还没有Linux下的客户端。&lt;/p>
+&lt;p>综上，下面列一个表吧：&lt;/p>
+&lt;hr>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">-&lt;/th>
+&lt;th style="text-align:left">rtorrent&lt;/th>
+&lt;th style="text-align:left">qbittorrent&lt;/th>
+&lt;th style="text-align:left">transmission&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">资源占用及下载效率&lt;/td>
+&lt;td style="text-align:left">最优&lt;/td>
+&lt;td style="text-align:left">优&lt;/td>
+&lt;td style="text-align:left">略差&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">配置难度&lt;/td>
+&lt;td style="text-align:left">最难&lt;/td>
+&lt;td style="text-align:left">较简单&lt;/td>
+&lt;td style="text-align:left">较简单&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">稳定性&lt;/td>
+&lt;td style="text-align:left">稳定&lt;/td>
+&lt;td style="text-align:left">较不稳定&lt;/td>
+&lt;td style="text-align:left">稳定&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">移动端支持（WebUI）&lt;/td>
+&lt;td style="text-align:left">良好&lt;/td>
+&lt;td style="text-align:left">较差&lt;/td>
+&lt;td style="text-align:left">尚可&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">批量添加种子（WebUI）&lt;/td>
+&lt;td style="text-align:left">不支持&lt;/td>
+&lt;td style="text-align:left">支持&lt;/td>
+&lt;td style="text-align:left">支持&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">HTTPS支持（WebUI）&lt;/td>
+&lt;td style="text-align:left">通过Web服务器支持&lt;/td>
+&lt;td style="text-align:left">原生支持、也可通过Web服务器支持&lt;/td>
+&lt;td style="text-align:left">如果使用Web服务器代理，则UI本身不能设有密码&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">WebUI综合评价&lt;/td>
+&lt;td style="text-align:left">优秀&lt;/td>
+&lt;td style="text-align:left">较差&lt;/td>
+&lt;td style="text-align:left">原生WebUI较差，transmission-web-control 优秀&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">种子包内容控制&lt;/td>
+&lt;td style="text-align:left">分文件夹，可按属性排序&lt;/td>
+&lt;td style="text-align:left">不分文件夹，不可排序&lt;/td>
+&lt;td style="text-align:left">分文件夹，可按属性排序&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">为未完成文件添加后缀&lt;/td>
+&lt;td style="text-align:left">不支持&lt;/td>
+&lt;td style="text-align:left">支持&lt;/td>
+&lt;td style="text-align:left">支持&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Android客户端&lt;/td>
+&lt;td style="text-align:left">功能少&lt;/td>
+&lt;td style="text-align:left">功能少&lt;/td>
+&lt;td style="text-align:left">功能完备&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">Windows客户端&lt;/td>
+&lt;td style="text-align:left">无&lt;/td>
+&lt;td style="text-align:left">无&lt;/td>
+&lt;td style="text-align:left">功能完备&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;p>事实上，如果喜欢按挑三拣四的模式下大包或者对速度和资源占用要求没那么高，Transmission是最佳选择。如果有大批量发布种子的需求，那么rtorrent则是最佳选择。如果追求速度，不希望太操心，那可以试试qbittorrent。&lt;/p>
+&lt;p>以上，本文部分内容靠回忆书写，如有遗漏的地方，请留言指出。&lt;/p>
+- https://hong.im/posts/qbittorrent-vs-transmission-vs-rtorrent/ - This is a customized copyright.</description></item><item><title>在centOS 7上面，从源码包重新编译软件包</title><link>https://hong.im/posts/rebuild-from-srpm-on-centos-7/</link><pubDate>Sun, 27 Dec 2015 11:32:36 +0000</pubDate><guid>https://hong.im/posts/rebuild-from-srpm-on-centos-7/</guid><description>北落师门 https://hong.im/posts/rebuild-from-srpm-on-centos-7/ -&lt;p>众所周知，ocserv需要重新编译才能支持比较详细的路由设置。这里简单总结一下如何在centOS 7 上面，从srpm出发，重新编译RPM包。&lt;/p>
+&lt;p>基本参考的资料就是官方的构建环境搭建指南和RPM重构指南：
+&lt;a href="https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment">https://wiki.centos.org/HowTos/SetupRpmBuildEnvironment&lt;/a>
+&lt;a href="https://wiki.centos.org/HowTos/RebuildSRPM">https://wiki.centos.org/HowTos/RebuildSRPM&lt;/a>&lt;/p>
+&lt;h2 id="搭建构建环境">搭建构建环境&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>首先安装必备的软件包：&lt;/p>
+&lt;p>yum install rpm-build redhat-rpm-config make gcc&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>建立相应的用户，并切换到相应用户：&lt;/p>
+&lt;p>user add mockbuild
+su mockbuild&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>需要注意的是，官方建议不使用root账户来进行编译，而看起来EPEL默认的编译用户是mockbuild，上一步建立任意非root账户其实也可以但是可能会在安装srpm的时候遇到类似于下面的警告：&lt;/p>
+&lt;pre>&lt;code>warning: user mockbuild does not exist - using root
+warning: group mockbuild does not exist - using root
+&lt;/code>&lt;/pre>
+&lt;p>从个人实践的情况来看，似乎上面的警告也不会影响最后的编译，所以看你自己咯。&lt;/p>
+&lt;ol start="3">
+&lt;li>
+&lt;p>建立相应的文件夹：&lt;/p>
+&lt;p>mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>设定RPM build变量：&lt;/p>
+&lt;p>echo &amp;lsquo;%_topdir %(echo $HOME)/rpmbuild&amp;rsquo; &amp;gt; ~/.rpmmacros&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="取得源代码包进行重编译">取得源代码包进行重编译&lt;/h2>
+&lt;p>以epel为例，可以从这里取得对应的SRPM：
+&lt;a href="https://dl.fedoraproject.org/pub/epel/7/SRPMS/">https://dl.fedoraproject.org/pub/epel/7/SRPMS/&lt;/a>&lt;/p>
+&lt;p>将对应的SRPM下载下来，然后使用rpm进行安装：&lt;/p>
+&lt;pre>&lt;code>rpm -i /path/to/the/rpm
+&lt;/code>&lt;/pre>
+&lt;p>相关的文件会被解压到上一步新建的文件夹。&lt;/p>
+&lt;p>以ocserv为例，我们需要更改源码包中的vpn.h。所以需要先从SOURCES目录下的ocserv-0.10.8.tar.xz解压出源码，修改vpn.h以后打包回去：&lt;/p>
+&lt;pre>&lt;code>cd SOURCES
+tar -Jxf ocserv-0.10.8.tar.xz
+rm ocserv-0.10.8.tar.xz
+tar -Jcf ocserv-0.10.8.tar.xz ocserv-0.10.8/
+&lt;/code>&lt;/pre>
+&lt;p>然后重新编译rpm包：&lt;/p>
+&lt;pre>&lt;code>rpmbuild -ba SPECS/ocserv.spec
+&lt;/code>&lt;/pre>
+&lt;p>然后在RPMS下就会生成对应的rpm包了。&lt;/p>
+- https://hong.im/posts/rebuild-from-srpm-on-centos-7/ - This is a customized copyright.</description></item><item><title>亲身经历某地区医院的医疗事故，说一下看法和不满。</title><link>https://hong.im/posts/a-medical-malpractice-experience/</link><pubDate>Thu, 04 Sep 2014 17:46:24 +0000</pubDate><guid>https://hong.im/posts/a-medical-malpractice-experience/</guid><description>北落师门 https://hong.im/posts/a-medical-malpractice-experience/ -&lt;p>我希望能尽量以比较客观的态度来谈论这件事情。&lt;/p>
+&lt;h2 id="事情经过">事情经过：&lt;/h2>
+&lt;p>我妈妈因为子宫肌瘤在8月4号，于本区的地区中心医院妇科，也是本区唯一的三甲医院完成了子宫肌瘤切除手术。完成手术后，主治医生把纱布遗留在我妈妈体内（似乎是子宫附近，非医疗专业不是很确定），造成8月4号至9月1号期间我妈妈一直有恶臭分泌物，浑身无力（严重到吃饭的时候没有力气把碗端起来，只能拿的动筷子，期间几乎没法上台阶。），且浑身疼痛。反正我在家那两天休息的很差，身体状况非常糟糕，而且据说我走以后情况还继续恶化。&lt;/p>
+&lt;p>因为身体不适，我妈妈在8月21日到该医院复查，该医院没发现这个问题，而是给我妈开了治疗胃疼的药。&lt;/p>
+&lt;p>于9月1日，我妈妈在另外一个医院被发现纱布，并取出，现在恢复已经非常良好。（所以我才能有闲暇在这里发这个博文）。&lt;/p>
+&lt;p>我要说一下的是，在手术前，我已经咨询了我一个同学和一个师姐得到的答复是这是一个小手术，而且某医院是本区最好的医院啊。所以才放心的让我妈妈在该医院完成手术，根本没有任何会出现这种事故的心理准备。&lt;/p>
+&lt;h2 id="对该院的看法和不满">对该院的看法和不满&lt;/h2>
+&lt;ol start="0">
+&lt;li>
+&lt;p>**首先声明，我对该主刀医师并没有特别大意见。**作为一个搞化学的，我很明白实验多了都会有误差，手术多了肯定可能出现误差，难以避免。而且出了这个事故我相信她也并不好过，之后也不会好过。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>**我认为该院至少手术管理流程上有一定问题。**因为三块纱布并不是小东西，如果手术流程规范，我认为应该能尽量避免的。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>我认为要么该院复查流程不够规范，要么是主管医师责任心不够。&lt;/strong> 该院在我妈明确表明是手术后不适，恢复时间远超于预期（据说做了这个手术的阿姨说她在7天左右基本恢复，复查时我妈妈距离手术已经半个多月），病情非常严重的情况下（参看前面），且复查时通过B超发现子宫附件有大块阴影，报告医师后，被简单的处理成了子宫肌瘤未切除完（我妈妈在手术室呆了3个多小时，因为血糖升高，血钠失衡被提前中断手术，未完全完成手术）。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>**该医院某些医生态度非常有问题。**21号我妈去医院复查时，由于我在自动挂号机上挂的号，而那台挂号机因为故障没有吐出回执。在大厅询问导医MM得到没有影响的明确答复后到该院319门诊检查。因为妇科的原因，我没法陪同。结果我妈妈因为没有挂号的回执（和没有按要求排队？这个是我猜测的）被该医生呵斥了出来（同样是猜测，非常抱歉）。但是换成大家。看到一个刚才上楼梯都没力气，两楼走了10多20分钟路的人，而且是亲身母亲，一而再再二三的从诊室委屈的走出来是什么感觉！总之我当时非常生气！&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>在我有点生气的冲进去以后，询问之后该医生不耐烦的说，没看到我很忙么（那里确实很多人，但是都是年轻女人啊！！），不会好好排队么？&lt;/p>
+&lt;p>我承认，我母亲确实是没有按规矩，但是您作为一个医师，不能好言提醒让她排队吗？态度不能稍微好一点么？至少指出是什么问题我们好解决啊！&lt;/p>
+&lt;ol start="4">
+&lt;li>**该医院某领导沟通能力极差。**在确认是该医院引起的医疗事故后，我陪同我父母到该医院协商赔偿的事情。妇科某吴姓主任接待的我们。某些言论让我作为一个家属非常不舒服。&lt;/li>
+&lt;/ol>
+&lt;p>首先，在主刀医师在场，且已经默认的情况下，该主任大量强调：1. 这个手术几乎不可能会用到纱布，所以几乎不可能会出现纱布遗留（我对这段的理解是，&lt;strong>我不是很相信你们，你们是不是搞错了？或者不会是要来讹我们钱吧&lt;/strong>）。2. 我们医院也感到抱歉，但是这种事情我们医院经常遇到（反正我对这段的理解是&lt;strong>所以我抱歉的也很有限度。&lt;/strong>）在我们没有提起前，绝口不谈赔偿的事情。我觉得我们应该佩服中国某些人打太极的能力，就这么一些话，这个主任说了1个小时左右（这个时间回忆得到，可能受主观影响，并不精确）&lt;/p>
+&lt;p>其次，在讨论赔偿的时候。我因为没有对应的经验（我祝福看博客的各位都不要有），一早在家根据《医疗事故处理条例》草拟了一份大概的赔偿协议，因为相关知识不足，把我母亲和父亲的误工费，陪护费基准定为了非私营企业城镇居民平均工资，是偏高的。合计约8000的样子（严格按法律条款算下来我父亲没有陪护费，大约2000多的样子）。但是后面综合实际情况：我母亲延缓一个月愈合，我父亲额外的一个月陪护，和相应的对我母亲造成的痛苦。我个人认为这个金额是协商应该得到的金额。&lt;/p>
+&lt;p>而该主任在我拿出这个单子以后，一直强调：1. &lt;strong>根据法律条款，我父亲不应该得到陪护费。医院可以考虑考虑（“但是我就是不很想给”）&lt;/strong>。2. &lt;strong>根据法律条款，我父亲母亲的这两个基准都高了，是没法商量的。&lt;/strong>&lt;/p>
+&lt;p>我想说的是，根据法律条款，确实不应该付这些钱（顺便说下，这个《医疗事故处理条例》目前意见也很大，见这里： &lt;a href="http://www.infzm.com/content/49104">《医疗事故处理条例》当休矣&lt;/a> ），但是协商的目的是什么，是想根据道义得到补偿啊。是我们已经认为某医院能够吸取教训减少这类事情的发生，避免对医院造成其他影响啊。既然没有人情味，要按法律走，还何必协商呢？&lt;/p>
+&lt;p>最后，该医生的其他言论让我回想起来，总结就是你们大约是乡下人想来闹一闹要点钱，我这种经过大风大浪的人怎么会让你们得逞（原话：我吴某人当了20多年主任，在重庆地区也是有头有脸的人，经常处理这类事故）。注：该段主观感受很重，请自行选择忽略。&lt;/p>
+&lt;p>以上，所以我认为现在医闹这么严重，某些医生也是需要负起责任的。&lt;/p>
+- https://hong.im/posts/a-medical-malpractice-experience/ - This is a customized copyright.</description></item><item><title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title><link>https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/</link><pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate><guid>https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/</guid><description>北落师门 https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/ -&lt;p>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。&lt;/p>
+&lt;p>使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。&lt;/p>
+&lt;p>本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。&lt;/p>
+&lt;p>本文包括三个部分：
+0. 安装相应软件包
+2. 配置dnsmasq和ipset
+3. 【可选】使用pdnsd获取更优的解析结果。
+4. DEBUG&lt;/p>
+&lt;h2 id="一安装需要的软件包">一、安装需要的软件包&lt;/h2>
+&lt;p>需要从外部下载以后安装的：
+shadowsocks：推荐从http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/ 下载。
+·
+我的做法是下载下来在本地用nginx建一个http服务器，然后在路由器上去wget。另外的普遍做法是用winscp直接上传到路由器，共参考选择。&lt;/p>
+&lt;p>开始安装：&lt;/p>
+&lt;pre>&lt;code>opkg update //安装前必须更新包数据库缓存。
+opkg install ipset iptables-mod-nat-extra
+opkg install dnsmasq-full --force-overwrite //官方提供的dnsmasq-full提供了ipset相关 的功能，需要加后面的参数进行强制覆盖安装。
+&lt;/code>&lt;/pre>
+&lt;p>&lt;strong>某些&lt;/strong> 版本ipset安装后会报类似下面的错误：&lt;/p>
+&lt;pre>&lt;code>kmod: failed to insert /lib/modules/3.10.44/ip_set.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ipmac.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_port.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipport.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipportip.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipportnet.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_net.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_netiface.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_netport.ko
+kmod: failed to insert /lib/modules/3.10.44/ip_set_list_set.ko
+kmod: failed to insert /lib/modules/3.10.44/xt_set.ko
+&lt;/code>&lt;/pre>
+&lt;p>需要重新启动以后ipset 才能正常使用。&lt;/p>
+&lt;p>这里假设你已经下好上文中的dnsmasq和shadowsocks并且进入了存放这两个文件的文件夹。&lt;/p>
+&lt;p>安装shadowsocks：&lt;/p>
+&lt;pre>&lt;code>opkg install shadowsocks-libev-polarssl_1.4.5_ar71xx.ipk
+&lt;/code>&lt;/pre>
+&lt;p>新版本不需要处理libpolarssl的问题，老版本shadowsocks编译的时候链接的是libpolarssl.so.5，所以我们需要做一个libpolarssl.so.5软链接出来，否则shadowsocks不能启动且不会有任何报错。&lt;/p>
+&lt;pre>&lt;code>ln -s /usr/lib/libpolarssl.so /usr/lib/libpolarssl.so.5
+&lt;/code>&lt;/pre>
+&lt;p>同时你需要自行编辑下/etc/shadowsocks.json，把正确的shadowsocks服务器信息填进去。&lt;/p>
+&lt;p>另外因为我们需要用到的是ss-redir而不是ss-local。所以请用编辑器打开/etc/init.d/shadowsocks 然后把里面所有的ss-local全部换成ss-redir（一共两处），然后：&lt;/p>
+&lt;pre>&lt;code>/etc/init.d/shadowsocks enable //让shadowsocks自动启动
+&lt;/code>&lt;/pre>
+&lt;p>考虑到之前ipset的问题。到这里我们先重启一下吧，咱们重启以后见 丷丷。&lt;/p>
+&lt;h2 id="二配置dnsmasq和ipset">二、配置dnsmasq和ipset&lt;/h2>
+&lt;p>我们先用ipset创建一个set，这里我创建的set名字为setmefree（没有逼格啊没有逼格）,然后将这个set中所有IP均转发到shadowsocks（这里本机的shadowsocks监听的是默认的1080端口）。
+建议将下面的命令写入 /etc/rc.local 。每次开机自动运行。&lt;/p>
+&lt;pre>&lt;code>ipset -N setmefree iphash
+iptables -t nat -A PREROUTING -p tcp -m set --match-set setmefree dst -j REDIRECT --to-port 1080
+&lt;/code>&lt;/pre>
+&lt;p>设置 dnsmasq 对某些域名使用opendns进行解析并且加入setmefree这个set：
+为了保持配置文件整洁，建议在 /etc/dnsmasq.conf 最后加入：&lt;/p>
+&lt;pre>&lt;code>conf-dir=/etc/dnsmasq.d
+&lt;/code>&lt;/pre>
+&lt;p>然后新建目录 /etc/dnsmasq.d ，在里面加入一个 conf，名字任选。譬如 /etc/dnsmasq.d/fuckgfw.conf , 下面是我的文件内容，你可以按自己需要整理自己的：&lt;/p>
+&lt;p>#Google and Youtube
+server=/.google.com/208.67.222.222#443
+server=/.google.com.hk/208.67.222.222#443
+server=/.gstatic.com/208.67.222.222#443
+server=/.ggpht.com/208.67.222.222#443
+server=/.google.com/208.67.222.222#443
+server=/.google.com.hk/208.67.222.222#443
+server=/.gstatic.com/208.67.222.222#443
+server=/.ggpht.com/208.67.222.222#443
+server=/.googleusercontent.com/208.67.222.222#443
+server=/.appspot.com/208.67.222.222#443
+server=/.googlecode.com/208.67.222.222#443
+server=/.googleapis.com/208.67.222.222#443
+server=/.gmail.com/208.67.222.222#443
+server=/.google-analytics.com/208.67.222.222#443
+server=/.youtube.com/208.67.222.222#443
+server=/.googlevideo.com/208.67.222.222#443
+server=/.youtube-nocookie.com/208.67.222.222#443
+server=/.ytimg.com/208.67.222.222#443
+server=/.blogspot.com/208.67.222.222#443
+server=/.blogger.com/208.67.222.222#443
+server=/.google.co.jp/208.67.222.222#443
+server=/.google.co.uk/208.67.222.222#443&lt;/p>
+&lt;p>#FaceBook
+server=/.facebook.com/208.67.222.222#443
+server=/.thefacebook.com/208.67.222.222#443
+server=/.facebook.net/208.67.222.222#443
+server=/.fbcdn.net/208.67.222.222#443
+server=/.akamaihd.net/208.67.222.222#443&lt;/p>
+&lt;p>#Twitter
+server=/.twitter.com/208.67.222.222#443
+server=/.t.co/208.67.222.222#443
+server=/.bitly.com/208.67.222.222#443
+server=/.twimg.com/208.67.222.222#443
+server=/.tinypic.com/208.67.222.222#443
+server=/.yfrog.com/208.67.222.222#443&lt;/p>
+&lt;p>#Dropbox
+server=/.dropbox.com/208.67.222.222#443&lt;/p>
+&lt;p>#1024
+server=/.t66y.com/208.67.222.222#443&lt;/p>
+&lt;p>#shadowsocks.org
+server=/.shadowsocks.org/208.67.222.222#443&lt;/p>
+&lt;p>#btdigg
+server=/.btdigg.org/208.67.222.222#443&lt;/p>
+&lt;p>#sf.net
+server=/.sourceforge.net/208.67.222.222#443&lt;/p>
+&lt;p>#feedly
+server=/.feedly.com/208.67.222.222#443&lt;/p>
+&lt;p>#github and fastly
+server=/.github.com/208.67.222.222#443
+server=/.fastly.com/208.67.222.222#443&lt;/p>
+&lt;p>#wikipedia
+server=/.wikipedia.org/208.67.222.222#443
+server=/.wikimedia.org/208.67.222.222#443
+server=/.wiktionary.org/208.67.222.222#443&lt;/p>
+&lt;p>#xda
+server=/.xda-developers.com/208.67.222.222#443&lt;/p>
+&lt;h1 id="here-comes-the-ipset">Here Comes The ipset&lt;/h1>
+&lt;p>#Google and Youtube
+ipset=/.google.com/setmefree
+ipset=/.google.com.hk/setmefree
+ipset=/.gstatic.com/setmefree
+ipset=/.ggpht.com/setmefree
+ipset=/.googleusercontent.com/setmefree
+ipset=/.appspot.com/setmefree
+ipset=/.googlecode.com/setmefree
+ipset=/.googleapis.com/setmefree
+ipset=/.gmail.com/setmefree
+ipset=/.google-analytics.com/setmefree
+ipset=/.youtube.com/setmefree
+ipset=/.googlevideo.com/setmefree
+ipset=/.youtube-nocookie.com/setmefree
+ipset=/.ytimg.com/setmefree
+ipset=/.blogspot.com/setmefree
+ipset=/.blogger.com/setmefree
+ipset=/.google.co.jp/setmefree
+ipset=/.google.co.uk/setmefree&lt;/p>
+&lt;p>#FaceBook
+ipset=/.facebook.com/setmefree
+ipset=/.thefacebook.com/setmefree
+ipset=/.facebook.net/setmefree
+ipset=/.fbcdn.net/setmefree
+ipset=/.akamaihd.net/setmefree&lt;/p>
+&lt;p>#Twitter
+ipset=/.twitter.com/setmefree
+ipset=/.t.co/setmefree
+ipset=/.bitly.com/setmefree
+ipset=/.twimg.com/setmefree
+ipset=/.tinypic.com/setmefree
+ipset=/.yfrog.com/setmefree&lt;/p>
+&lt;p>#Dropbox
+ipset=/.dropbox.com/setmefree&lt;/p>
+&lt;p>#1024
+ipset=/.t66y.com/setmefree&lt;/p>
+&lt;p>#shadowsocks.org
+ipset=/.shadowsocks.org/setmefree&lt;/p>
+&lt;p>#btdigg
+ipset=/.btdigg.org/setmefree&lt;/p>
+&lt;p>#sf.net
+ipset=/.sourceforge.net/setmefree&lt;/p>
+&lt;p>#feedly
+ipset=/.feedly.com/setmefree&lt;/p>
+&lt;p>#github&amp;amp;fastly
+ipset=/.github.com/setmefree
+ipset=/.fastly.com/setmefree&lt;/p>
+&lt;p>#wikipedia
+ipset=/.wikipedia.org/setmefree
+ipset=/.wikimedia.org/setmefree
+ipset=/.wiktionary.org/setmefree&lt;/p>
+&lt;p>#xda
+ipset=/.xda-developers.com/setmefree&lt;/p>
+&lt;p>注意：&lt;/p>
+&lt;ol>
+&lt;li>目前公共DNS有opendns监听非标准端口（443和5353），你也可以到这里查看由opennic提供的DNS：http://meo.ws/dnsrec.php （均监听以下端口54, 443, 1053, 1194, 5353, 8080，27015），当然你也可以自己建DNS服务器。关于DNS优化的讨论请参考下一节。&lt;/li>
+&lt;li>每条记录都需要跟一条ipset设置，不要忘了。&lt;/li>
+&lt;/ol>
+&lt;p>然后重启 dnsmasq：&lt;/p>
+&lt;pre>&lt;code>/etc/init.d/dnsmasq restart
+&lt;/code>&lt;/pre>
+&lt;p>或者直接重新启动，顺便测试rc.local中的命令有没有成功运行。&lt;/p>
+&lt;h2 id="三可选使用pdnsd获取更优的解析结果">三、【可选】使用pdnsd获取更优的解析结果。&lt;/h2>
+&lt;p>注意：通过上面的配置您的openwrt穿墙已经应该正常了，下面仅作优化方面的讨论。&lt;/p>
+&lt;p>由于opendns是根据来源IP给出结果，导致的结果是直接在路由器上查询返回的是对应中国的IP，以youtube为例：&lt;/p>
+&lt;pre>&lt;code>dig www.youtube.com @208.67.222.222 -p 443
+&lt;/code>&lt;/pre>
+&lt;p>给出的其中一个结果为：173.194.72.102，在VPS上ping（你应该能理解，所有过shadowsocks的流量事实上是由VPS中转的，所以我们测试的是VPS与该IP的连接情况）约&lt;strong>33ms&lt;/strong>。而换用VPS当地的DNS可以将延迟降到&lt;strong>1.45ms&lt;/strong>左右。个人认为还是很有意义的。当然其实如果不怕麻烦自建DNS是最好啦。&lt;/p>
+&lt;p>关于pdnsd的配置请参考&lt;a href="http://hong.im/2014/03/16/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/">上一篇&lt;/a>。&lt;/p>
+&lt;h2 id="四debug">四、DEBUG&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>通过下面的命令查看set中的IP，这样可以确定解析是否正常，并且查看某网站是否正确的被加到了ipset：&lt;/p>
+&lt;p>ipset list setmefree&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>通过下面的命令可以清理掉set中所有ip。更多的ipset用法请查看&lt;em>ipset help&lt;/em>&lt;/p>
+&lt;pre>&lt;code>ipset flush setmefree
+&lt;/code>&lt;/pre>
+&lt;ol start="2">
+&lt;li>
+&lt;p>以daemon模式运行shadowsocks前建议先试一下确保配置文件无误：&lt;/p>
+&lt;p>ss-redir -c /etc/shadowsocks.json&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="更新记录">更新记录：&lt;/h2>
+&lt;p>2015年8月9日 修正一些说法，更新DNS配置文件。&lt;/p>
+- https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/ - This is a customized copyright.</description></item><item><title>配置一台基于openWRT的路由器使用shadowsocks并智能穿墙</title><link>https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</link><pubDate>Sun, 16 Mar 2014 21:07:48 +0000</pubDate><guid>https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</guid><description>北落师门 https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/ -&lt;p>本文开始写作时中使用的路由器为TP-LINK WR841N（D）V7（with openwrt 12.09 稳定版），到这次更新时已经换为了水星 4530R （with openwrt trunk）&lt;/p>
+&lt;p>在路由器上使用shadowsocks的&lt;strong>优势&lt;/strong>：
+0. 效率比较高，在我的不严谨测试中效率比ipsec和pptp都略高。&lt;/p>
+&lt;ol>
+&lt;li>目前为止比较稳定（较少受到干扰）而且比较安全。&lt;/li>
+&lt;li>服务器端和客户端的配置都相对来说比较简单，不容易出错。&lt;/li>
+&lt;li>路由器下面的所有设备都可以&lt;strong>0配置自动穿墙&lt;/strong>，你懂的。&lt;/li>
+&lt;li>相比goagent（基本阵亡？默哀）而言，要求的包都很小。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>劣势&lt;/strong>
+0. 暂时没有发现。（是的。本来的问题我貌似解决了。）&lt;/p>
+&lt;p>本文的基本目的是在openwrt上使用pdnsd通过tcp查询规避DNS污染，通过iptables转发到端口的功能转发特定流量给跑在路由器上的shadowsocks来访问某些特定IP段达到一定程度无视某墙的存在的目的。&lt;/p>
+&lt;p>本文分为三个部分：
+0. &lt;strong>相关包的安装和shadowsocks的配置&lt;/strong>&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>pdnsd的配置&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>使用iptables对流量进行重定向&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;h2 id="在openwrt上安装相关的包并配置shadowsocks">在openwrt上安装相关的包并配置shadowsocks&lt;/h2>
+&lt;p>其中shadowsocks我们使用shadowsocks-libev-polarssl（openssl的lib比较大，塞不下……），推荐从这里获取：
+&lt;a href="http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/">http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/&lt;/a>&lt;/p>
+&lt;p>然后在路由器端刷新opkg缓存包并安装shadowsocks：&lt;/p>
+&lt;pre>&lt;code>opkg update
+opkg install shadowsocks-libev-polarssl_1.4.5_ar71xx.ipk
+&lt;/code>&lt;/pre>
+&lt;p>我们还需要安装额外的包，其中我们使用&lt;em>pdnsd&lt;/em>（如果后面直接配置dnsmasq转发请求给opendns则不需要）来净化部分国外域名解析，用&lt;em>iptables-mod-nat-extra&lt;/em>实现iptables流量转发到端口的功能：&lt;/p>
+&lt;pre>&lt;code>opkg update
+opkg install pdnsd
+opkg install pdnsd iptables-mod-nat-extra
+&lt;/code>&lt;/pre>
+&lt;p>我们需要编辑shadowsocks的配置信息 &lt;em>/etc/config/shadowsocks.json&lt;/em>（新版默认的配置文件移动到了/etc/shadowsocks.json 不过在后面启动的时候指定就好了，无影响。）：
+格式如下：&lt;/p>
+&lt;pre>&lt;code>{
+&amp;quot;server&amp;quot;:&amp;quot;[服务器IP地址]&amp;quot;,
+&amp;quot;server_port&amp;quot;:[服务器端口],
+&amp;quot;local_port&amp;quot;:[本地端口,稍后iptables会用到],
+&amp;quot;password&amp;quot;:&amp;quot;[密码]&amp;quot;,
+&amp;quot;timeout&amp;quot;:600,
+&amp;quot;method&amp;quot;:&amp;quot;[加密方式]&amp;quot;
+}
+&lt;/code>&lt;/pre>
+&lt;p>在12.09上shadowsocks会因为缺少libpolarssl.so.3而无法启动，我们可以使用ln“欺骗”一下shadowsocks：&lt;/p>
+&lt;p>&lt;em>注：我目前一切切换到trunk版本，不知道新版是否还存在这个BUG，请自行测试能否启动。&lt;/em>&lt;/p>
+&lt;pre>&lt;code>ln -s /usr/lib/libpolarssl.so /usr/lib/libpolarssl.so.3
+&lt;/code>&lt;/pre>
+&lt;h2 id="配置pdnsd对某些域名进行净化">配置pdnsd对某些域名进行净化&lt;/h2>
+&lt;p>我采用的基本思路是通过pdnsd使用TCP协议向国外的上级DNS查询而避过DNS污染，然后在本地提供一个1053端口的DNS供dnsmasq使用。如果全局使用pdnsd转发的国外DNS会导致国内某些网站或者服务访问较慢，不推荐。
+另外一个思路是使用非标准端口查询，那么就可以不需要配置pdnsd，直接在dnsmasq配置中将相关域名查询请求转发给支持非标准端口的DNS就行了，目前已知的是opendns支持5353端口和443端口。（即在dnsmasq段配置将127.0.0.1#1053 替换为 208.67.222.222#5353 或 208.67.222.222#443 &lt;strong>注意：未测试，仅理论分析&lt;/strong>）。&lt;/p>
+&lt;p>&lt;em>提醒一下：最近对Google的干扰已经全面升级，单纯解决DNS污染没法愉快的撸youtube了。&lt;/em>&lt;/p>
+&lt;p>修改pdnsd的配置文件 &lt;em>/etc/pdnsd.conf&lt;/em>：
+注意关注中文注释部分，如果复制记得把中文注释删掉。。。其他部分如果您需要，再自行修改：&lt;/p>
+&lt;pre>&lt;code># 这一段全局配置需要修改：
+global {
+# debug = on;
+perm_cache=1024;
+cache_dir=&amp;quot;/var/pdnsd&amp;quot;;
+run_as=&amp;quot;nobody&amp;quot;;
+server_port = 1053; # ！！！使用 1053 作为 dns 端口, 默认是 53，一定要修改否则会跟默认dnsmasq冲突
+server_ip = 127.0.0.1; #我们只需要处理本机转发的DNS查询，所以不需要更改
+status_ctl = on;
+query_method=tcp_only; # ！！！最重要的配置, 只使用 tcp 查询上级 dns
+min_ttl=15m;
+max_ttl=1w;
+timeout=10;
+}
+#……
+# 自行增加下面这一段，pdnsd默认是没有提供上游DNS服务器的（默认配置文件中用各种注释方式把自带的注释掉了）：
+server {
+label= &amp;quot;googledns&amp;quot;; # 这个label随便写
+ip = 8.8.8.8; # 这里为上级 dns 的 ip 地址，要求必须支持TCP查询，相关说明见后文注解
+root_server = on; # 设置为 on。
+uptest = none; # 不去检测 dns 是否无效.
+}
+# …… 后面不需要修改的就不贴出来了。
+&lt;/code>&lt;/pre>
+&lt;p>注：DNS地址如果不愿意倒腾可以使用Google Public DNS。如果需要使用其他DNS，请参考：http://public-dns.tk/ ，为了配合后面的重定向，建议使用与VPS地区相同的DNS，譬如我现在使用的服务器在日本，这里的DNS同样使用日本的DNS，一定程度上可以提高连接速度。&lt;/p>
+&lt;p>启用pdnsd，并设置为开机启动：&lt;/p>
+&lt;pre>&lt;code>/etc/init.d/pdnsd enable
+/etc/init.d/pdnsd start
+&lt;/code>&lt;/pre>
+&lt;p>设置dnsmasq对特定域名使用本地的pdnsd进行解析：
+为了保持配置文件整洁，建议在 &lt;em>/etc/dnsmasq.conf&lt;/em> 最后加入：&lt;/p>
+&lt;pre>&lt;code>conf-dir=/etc/dnsmasq.d
+&lt;/code>&lt;/pre>
+&lt;p>然后新建目录 &lt;em>/etc/dnsmasq.d&lt;/em> ，在里面加入一个conf，名字任选。譬如 &lt;em>/etc/dnsmasq.d/fuckgfw.conf&lt;/em> ,下面是我的文件内容，你可以按自己需要整理自己的：&lt;/p>
+&lt;pre>&lt;code>#Google and Youtube
+server=/.google.com/127.0.0.1#1053
+server=/.google.com.hk/127.0.0.1#1053
+server=/.gstatic.com/127.0.0.1#1053
+server=/.ggpht.com/127.0.0.1#1053
+server=/.googleusercontent.com/127.0.0.1#1053
+server=/.appspot.com/127.0.0.1#1053
+server=/.googlecode.com/127.0.0.1#1053
+server=/.googleapis.com/127.0.0.1#1053
+server=/.gmail.com/127.0.0.1#1053
+server=/.google-analytics.com/127.0.0.1#1053
+server=/.youtube.com/127.0.0.1#1053
+server=/.googlevideo.com/127.0.0.1#1053
+server=/.youtube-nocookie.com/127.0.0.1#1053
+server=/.ytimg.com/127.0.0.1#1053
+server=/.blogspot.com/127.0.0.1#1053
+server=/.blogger.com/127.0.0.1#1053
+#FaceBook
+server=/.facebook.com/127.0.0.1#1053
+server=/.thefacebook.com/127.0.0.1#1053
+server=/.facebook.net/127.0.0.1#1053
+server=/.fbcdn.net/127.0.0.1#1053
+server=/.akamaihd.net/127.0.0.1#1053
+#Twitter
+server=/.twitter.com/127.0.0.1#1053
+server=/.t.co/127.0.0.1#1053
+server=/.bitly.com/127.0.0.1#1053
+server=/.twimg.com/127.0.0.1#1053
+server=/.tinypic.com/127.0.0.1#1053
+server=/.yfrog.com/127.0.0.1#1053
+&lt;/code>&lt;/pre>
+&lt;h2 id="使用iptables对流量进行重定向">使用iptables对流量进行重定向&lt;/h2>
+&lt;p>之前犯了一个错误，采用了默认流量重定向，特定流量（亚太流量）穿透的思路。这样相对来说有很多不必要的流量被重定向到了shadowsocks的服务器端，尤其是在本路由下跑PT的情况。这几天想了下，为什么不只定向某些流量呢。&lt;/p>
+&lt;p>下面脚本的思路是所有流量默认穿透，只有符合条件的流量才被重定向。这样显得“智能”多了。&lt;/p>
+&lt;p>您可以直接复制下面的脚本，跟我一样保存为*/usr/bin/ss-black.sh*，注意运行前要给它运行权限：&lt;/p>
+&lt;pre>&lt;code>chmod +x /usr/bin/ss-black.sh
+&lt;/code>&lt;/pre>
+&lt;p>以下为脚本内容：&lt;/p>
+&lt;pre>&lt;code>#!/bin/sh
+#create a new chain named SHADOWSOCKS
+iptables -t nat -N SHADOWSOCKS
+#Redirect what you want
+#Google
+iptables -t nat -A SHADOWSOCKS -p tcp -d 74.125.0.0/16 -j REDIRECT --to-ports 1080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 173.194.0.0/16 -j REDIRECT --to-ports 1080
+#Youtube
+iptables -t nat -A SHADOWSOCKS -p tcp -d 208.117.224.0/19 -j REDIRECT --to-ports 1080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 209.85.128.0/17 -j REDIRECT --to-ports 1080
+#Twitter
+iptables -t nat -A SHADOWSOCKS -p tcp -d 199.59.148.0/22 -j REDIRECT --to-ports 1080
+#Shadowsocks.org
+iptables -t nat -A SHADOWSOCKS -p tcp -d 199.27.76.133/32 -j REDIRECT --to-ports 1080
+#1024
+iptables -t nat -A SHADOWSOCKS -p tcp -d 184.154.128.246/32 -j REDIRECT --to-ports 1080
+#Anything else should be ignore
+iptables -t nat -A SHADOWSOCKS -p tcp -j RETURN
+# Apply the rules
+iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+&lt;/code>&lt;/pre>
+&lt;p>注1：以前的暴力重定向所有流量（除亚洲流量以外）的版本在这里：https://gist.github.com/reee/fe174cfd8985273bc478
+注2：如果需要添加你自己需要访问的域名很简单。首先使用dig或者nslookup获取域名对应的&lt;strong>正确IP&lt;/strong>，然后借助APNIC的IP WHOIS工具：(&lt;a href="http://wq.apnic.net/apnic-bin/whois.pl">http://wq.apnic.net/apnic-bin/whois.pl&lt;/a>) 可以轻松的获得大部分IP段。以facebook为例：&lt;/p>
+&lt;p>dig获取的正确IP为：173.252.110.27。
+通过APNIC查询到173.252.64.0/18均属于facebook。则添加&lt;/p>
+&lt;pre>&lt;code>iptables -t nat -A SHADOWSOCKS -p tcp -d 173.252.64.0/18 -j REDIRECT --to-ports 1080
+&lt;/code>&lt;/pre>
+&lt;p>到上面脚本 倒数第二条前面就可以了。&lt;/p>
+&lt;p>然后就是见证奇迹的时刻：&lt;/p>
+&lt;pre>&lt;code>#设置路由：
+/usr/bin/ss-black.sh
+#启动shadowsocks
+/usr/bin/ss-redir -c /etc/config/shadowsocks.json &amp;amp;
+&lt;/code>&lt;/pre>
+&lt;h2 id="其他问题">其他问题&lt;/h2>
+&lt;p>查看iptables的NAT表来检查路由表是否已经成功加载：&lt;/p>
+&lt;pre>&lt;code>iptables -t nat --list
+&lt;/code>&lt;/pre>
+&lt;p>停止服务器：&lt;/p>
+&lt;pre>&lt;code>killall ss-redir # 关闭shadowsocks。
+/etc/init.d/firewall restart # 清除流量重定向配置。
+&lt;/code>&lt;/pre>
+&lt;p>参考文章：
+&lt;a href="https://wido.me/sunteya/use-openwrt-resolve-gfw-dns-spoofing">openwrt 上通过 pdnsd 和 dnsmasq 解决 dns 污染&lt;/a>
+&lt;a href="https://github.com/haohaolee/shadowsocks-openwrt">https://github.com/haohaolee/shadowsocks-openwrt&lt;/a>&lt;/p>
+&lt;p>更新历史：
+0. 2014-05-25 小幅修正某些说法，话说乃们在twitter上收藏那么多吓到我了。&lt;/p>
+&lt;ol>
+&lt;li>2014-06-12 更改路由方式，现在科学多了。&lt;/li>
+&lt;/ol>
+- https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/ - This is a customized copyright.</description></item><item><title>如是我闻</title><link>https://hong.im/posts/as-what-i-see/</link><pubDate>Wed, 26 Feb 2014 22:26:09 +0000</pubDate><guid>https://hong.im/posts/as-what-i-see/</guid><description>北落师门 https://hong.im/posts/as-what-i-see/ -&lt;p>还在县城的时候，就听说村长去世了。不过直到回到老家，看到田野上的那个土石垒起来的小包，盖满的花圈被雨水淋过，只剩一片惨白。在坟包的不远处散落一地火炮纸红的刺眼。我才算是有了真真切切的认识。&lt;/p>
+&lt;p>我母亲给我说，你看，村长就埋在那里。&lt;/p>
+&lt;p>村长是一个怎样的人呢？在我印象中，给我的感觉一直是邋邋遢遢的样子，他身上的衣服破旧不说，还总是给人一种没洗干净的样子。他的女人，跟他一样，穿的破破烂烂。鼻涕流出来，用手横着一下就擦掉了。用我们那的话说，叫打“huan（横）锤”。村长夫人总是两只手拖着她的孙子，也不管她孙子舒不舒服。她的孙子的衣服也是很脏，衣服“像覆了一层黑锅巴”。但是她的孙子有一双很特别的眼睛，黑的发亮。每次被那双眼睛看到，都觉得好像被他看穿了前生后世，因果轮回。&lt;/p>
+&lt;p>虽然似乎没什么权利，但是村长却是村里不可或缺的一号人物。每次村里要办什么红白喜事，人事分配统统由他来完成。总是回想起他在浑浊不清的广播里面说“我念一下帮忙打杂的人些……”&lt;/p>
+&lt;p>以前一直幻想，在他的葬礼上，会是谁来为他安排人事呢。可惜我却是错过了。不过春节回家却是遇到了另一家办生辰酒席。才知道村里面早已经选出了新的村长，于是广播虽然同样浑浊不清，但却换了一个声音。&lt;/p>
+&lt;h2 id="我是谁">我是谁？&lt;/h2>
+&lt;p>在过去的时间里面，我时常陷入一个问题，“我是谁”？&lt;/p>
+&lt;p>我是谁？作为“我”却很难回答这个问题。&lt;/p>
+&lt;p>我有指代我的名字，在社会里面完成我的工作，回到家，跟一群人维系家庭成员关系。这似乎就是我了。但是我是我的名字吗？不是。我是我的工作吗？显然不是。我是我在家里面的位置吗？当然也不是！但是我显然存在在这个世界上。这是我问出这个问题的前提。&lt;/p>
+&lt;p>我曾经构想过这样一个问题。如果写一个小程序。他的唯一的功能就是在人们调用它的时候返回它的名字。&lt;/p>
+&lt;p>“你好，我是一个程式，我的名字叫程式”。&lt;/p>
+&lt;p>那它是不是它呢？或者说，它有没有意识到“自我”的存在呢。&lt;/p>
+&lt;p>看起来，“我”似乎从来不曾存在，”我“又似乎无处不在。&lt;/p>
+&lt;p>而且我似乎也不是过去的我。哲学上有一个很著名的悖论，叫做忒修斯之船：&lt;/p>
+&lt;blockquote>
+&lt;p>忒修斯与雅典的年轻人们自克里特岛归还时所搭的30桨船被雅典的人留下来做为纪念碑，随着时间过去；木材也逐渐腐朽，而雅典的人便会更换新的木头来替代。最后，该船的每根木头都被换过了；因此，古希腊的哲学家们就开始问著：“这艘船还是原本的那艘忒修斯之船吗？如果是，但它已经没有最初的任何一根木头了；如果不是，那它是从什么时候不是的？”&lt;/p>
+&lt;/blockquote>
+&lt;p>这样看来我已经跟昨天不一样了。我还是我么？&lt;/p>
+&lt;p>我不能再次踏入同一条河。不光是河变了，我也变了。&lt;/p>
+&lt;p>我可能不是过去的我，我可能甚至都不是我。我被世界改变，我可能自己也在改变。但是我却依然是我。我努力的满足“我”，取悦“我”。我所做的一切，都是因为”我“。”我“在努力的影响整个世界。宣告我的存在。包括写下这篇蛋疼的文章。&lt;/p>
+&lt;h2 id="我存在吗">我存在吗？&lt;/h2>
+&lt;p>我的存在似乎也是一个伪命题。或许我现在还可以通过与社会交互，来表达”我存在在这个世界上“。然而当我终于化为以抔黄土，时间终于会洗刷掉我存在的证据。我曾经存在？或许吧。可惜没有任何人可以来为我证明。如果我们再把眼光放远一点，太阳系也终于走向终点，人类的文明——至少在地球的文明不复存在。恐怕那个时候不光是我们，就是如今，或者过去的”伟人“，存在的证据也会被抹煞一空。&lt;/p>
+&lt;p>就像是小的时候，我总喜欢在课桌的缝里，小学破败的土墙缝里，塞上一些自己写的字条。盼望有一天有人会发现。而现在回过头去，不光自己写了什么不记得了，那时候的小学校已经被推平，学校的那株大树也被砍掉，修了漂亮的新的村办公室。再也看不到过去的半点痕迹。&lt;/p>
+&lt;p>就像是门前的那条小河。我还记得小时候里面鱼虾成群，某天放学的我还有捡到一条搁浅的小鱼。现在却被山上修公路冲下来的泥石填平。还记得小时候在里面翻开石头找寻里面可能出现的铜钱。那一片片铜钱被时光腐蚀磨损，只剩下一片片残破。前朝的遗迹就这样被时光碾压。而被我们翻动的那些石块，静静的被新的泥沙压在底下，等待成为新的历史。&lt;/p>
+&lt;p>回过头来，多像是幻梦一场。佛教云”色即是空，空即是色“。有即是无，无即是有。所以存在终于也会变成不存在，不存在，也可以是曾经存在。彼岸花开，红粉骷髅。或者根本就是幻梦一场，我们其实生活在一个虚拟的世界。到头来一觉醒来，南柯一梦。&lt;/p>
+&lt;p>我想起《三体》中，人类文明的纪念碑，黑黝黝的孤零零的高耸如云。可惜最终也随着地球跌落到二维空间。所以纪念碑也终会消失吧。那为何还要纪念呢。&lt;/p>
+&lt;p>或许吧，在宇宙的边缘，有一个恒星孤零零的死去，爆发的灿烂用了几万亿年，穿越几万亿光年，终于来到你的跟前。本来仰望天空的你却低头去看那春天的花，开的肆无忌惮。于是一不小心，错过了它的那么长的旅程，那么久的跋涉。&lt;/p>
+&lt;p>不过我想我毕竟是存在的吧——即使可能很多人并没有察觉到这个事实，以后也可能没多少人记得这个事实。&lt;/p>
+&lt;p>也许是虚无缥缈，但是我现在感觉到我自己存在啊，心脏在随着春天的节奏跳动啊，血液在血管里面汹涌澎湃啊。真好。&lt;/p>
+&lt;p>如果真有海枯石烂——或许吧。我还真是希望我身上能有一个原子，能够躲过那么多次的撞击，保持现在的样子，为了向这个世界咏叹呢。&lt;/p>
+- https://hong.im/posts/as-what-i-see/ - This is a customized copyright.</description></item><item><title>时光·漫步</title><link>https://hong.im/posts/miss-someone/</link><pubDate>Sun, 15 Dec 2013 23:56:07 +0000</pubDate><guid>https://hong.im/posts/miss-someone/</guid><description>北落师门 https://hong.im/posts/miss-someone/ -&lt;p>还记得在高中的时候，特别喜欢在黄昏时候，倚着窗户，看着外面的高楼大厦。&lt;/p>
+&lt;p>彩灯一个个打开，点亮各种建筑的轮廓。然后又关闭，再打开。像天上的星星一样，一闪一闪。&lt;/p>
+&lt;p>后来去很远的地方读大学，坐着火车，穿越崇山峻岭，然后突然就看到了窗外亮起了点点的昏黄灯光，点缀在漆黑的夜幕下。&lt;/p>
+&lt;p>突然就有很温暖的感觉。宁静而又祥和。&lt;/p>
+&lt;p>特别喜欢一个人走在陌生的城市，看着陌生的人，做着应该他们去完成的事情。可是我应该做些什么事情呢，不，我只需要安安静静的看着就好了。&lt;/p>
+&lt;p>其实想要化作风，轻抚每一个遇到的脸庞，不管是稚嫩的咿呀学语，被岁月侵蚀的满面鬓霜还是英姿勃发，不可一世。
+想要变成雨，从天空慢慢的落到下面的人身上，不管他/她是在发愁明天的柴木油盐酱醋茶，还是只是在苦恼，待回的聚会到底穿哪双鞋才好。
+就让我变成空气吧，静静的旁观这世界的冷漠，欢乐，愤怒，幸福和哀伤。&lt;/p>
+&lt;p>我遇见很多人。
+我错过很多人。
+我忘记很多人。
+我记起很多人。&lt;/p>
+&lt;p>那个时候的我们，因为某些原因聚集到一起，而如今的我们，又因为某些原因，四散天涯。&lt;/p>
+&lt;p>细细回想，却又想不起初识的场景，再也记不得那时的模样。&lt;/p>
+&lt;p>那是懵懵懂懂，小心翼翼的模样。
+那时豪情万丈，充满幻想的模样。
+而我已经快忘了，很久以前那个，卑微，做什么都畏畏缩缩的我了。&lt;/p>
+&lt;p>一定有更好的风景在远处等我，你说是吧。&lt;/p>
+&lt;p>因为错过的东西，始终就是错过了吧。&lt;/p>
+&lt;p>只是，却不知，今夕何夕。&lt;/p>
+- https://hong.im/posts/miss-someone/ - This is a customized copyright.</description></item><item><title>雨一直下</title><link>https://hong.im/posts/rain-drop-on-the-world/</link><pubDate>Sun, 15 Dec 2013 15:43:36 +0000</pubDate><guid>https://hong.im/posts/rain-drop-on-the-world/</guid><description>北落师门 https://hong.im/posts/rain-drop-on-the-world/ -&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;p>一个人撑着伞走在雨中，看着冰冷的雨下在这个冰冷的世界。&lt;/p>
+&lt;p>我看到石护栏上的苔藓，在辛苦的生长，即使在这个寒冷的冬天，也努力的要绽放出一点不一样的色彩。&lt;/p>
+&lt;p>即使无人为它喝彩，甚至连偶尔眼神的逗留都欠奉。&lt;/p>
+&lt;p>冰冷的风吹来，街道如一潭死水一般波澜不惊。&lt;/p>
+&lt;p>只有突然从身旁跑过的嬉闹的似乎永远精力充沛，不知疲倦的小朋友，以前在街边被冻得鼻子通红，却没人光顾的小贩。&lt;/p>
+&lt;p>还有牵着一条土狗，身上穿着不知道裹了几层泥浆的流浪汉，和带着一身疲惫，老眼浑浊，亦步亦趋的老人。&lt;/p>
+&lt;p>打破了这个世界的死寂。&lt;/p>
+&lt;p>而我的脑袋里面却什么都没有想，我懒得对这个世界做出任何回应。&lt;/p>
+&lt;p>上一次像疯子一样在全城乱跑还是高中的事情，那个时候觉得这个县城好大，好复杂，觉的高中也好大，好复杂。跟同学一起，也不坐公交车，就像两只没头苍蝇，到处乱窜。希望可以借以排除掉心中的不安，与彷徨。&lt;/p>
+&lt;p>转眼间，同学已经去了云南，在一个小县城买了房子，娶了本地的姑娘。这个县城对我来说已经不过是见过的众多城市中很小的一个。我却又觉得这个社会好大，好复杂。无所适从。 脚步里，还是免不了的不安，彷徨。&lt;/p>
+&lt;p>其实我很喜欢雨，在雨点声声里，似乎这个喧嚣的世界也会安静下来，显得祥和，平静。这个世界的浮华，似乎跟着外面的灰尘一样，被荡涤掉了。&lt;/p>
+&lt;p>但是我也讨厌雨，冬日的冰冷，苦寒，似乎随着雨滴降落到这个世界，慢慢的潜伏到了心里。&lt;/p>
+&lt;p>这个世界，好冷啊。&lt;/p>
+&lt;p>昨晚一直处在半睡半醒的状态，混乱的似乎连时间的流逝都搞不清楚了。今天很困，却怎么也睡不着觉。&lt;/p>
+&lt;p>我却不知道该怎么办了。&lt;/p>
+&lt;p>其实我早就知道的吧。&lt;/p>
+&lt;p>今天去吃了豆花饭，一直觉得味道不对，结果才发现是以前最爱吃的豆豉忘了放。&lt;/p>
+- https://hong.im/posts/rain-drop-on-the-world/ - This is a customized copyright.</description></item><item><title>在Linux下面批量修改文件名字以及内容</title><link>https://hong.im/posts/edit-a-batch-of-files-in-linux/</link><pubDate>Sun, 27 Oct 2013 15:39:41 +0000</pubDate><guid>https://hong.im/posts/edit-a-batch-of-files-in-linux/</guid><description>北落师门 https://hong.im/posts/edit-a-batch-of-files-in-linux/ -&lt;p>众所周知，sed和awk被称为Linux系统维护的两大瑞士军刀，但是一直没学会……最近遇到批量修改文件的场合，用到了sed，所以记录一下。&lt;/p>
+&lt;h3 id="批量修改文件名字">批量修改文件名字&lt;/h3>
+&lt;pre>&lt;code>for i in `ls`; do mv -f $i `echo $i | sed 's/oldstring/newstring/'`; done
+&lt;/code>&lt;/pre>
+&lt;p>其实上面已经不算是一个语句了，而是通过for循环一个个的取出所有文件名达到遍历的效果。
+基本原理是使用echo取得文件名，交给sed替换字符串然后把结果（也就是新的文件名）作为参数回传给mv。
+需要注意的是，在shell里面把命令运行结果当作参数引用时，是需要用到 `` （键盘esc下面那个键）把需要引用的部分包围起来的。&lt;/p>
+&lt;h3 id="批量替换文件内容">批量替换文件内容&lt;/h3>
+&lt;pre>&lt;code>sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep -rl oldstring /path/to/dir`
+&lt;/code>&lt;/pre>
+&lt;p>这个其实蛮简单的。说下sed的几个参数。&lt;/p>
+&lt;pre>&lt;code>-i 表示直接把文件编辑掉（默认不会去修改文件内容）。
+双引号里面第一个s 的意思是替换，这个应该已经比较明确了。
+而最后那个g表示全部替换。
+&lt;/code>&lt;/pre>
+&lt;p>同样的，grep的结果是作为参数传给sed的，所以也需要用 `` 包围起来。其实个人感觉直接来个ls应该也能达到目的。&lt;/p>
+- https://hong.im/posts/edit-a-batch-of-files-in-linux/ - This is a customized copyright.</description></item></channel></rss>

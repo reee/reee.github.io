@@ -1,0 +1,336 @@
+<!doctype html><html><head>
+<title>配置一台基于openwrt的无线路由器作为纯无线AP使用</title>
+<meta charset=utf-8>
+<meta name=X-UA-Compatible content="IE=edge">
+<meta name=google-site-verification content>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" name=viewport>
+<meta content="telephone=no" name=format-detection>
+<meta name=description content>
+<meta name=renderer content="webkit">
+<meta name=theme-color content="#ffffff">
+<meta property="og:title" content="配置一台基于openwrt的无线路由器作为纯无线AP使用">
+<meta property="og:description" content="什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
+无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
+对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。
+另外一个补充就是，因为无线路由器方式共享一个出口IP，所以说适用于共享上网的场景。而无线AP方式因为每个用户都是独立获取IP，所以适合于每个用户都用自己的账号进行上网的场景。
+openwrt上对Dumb AP的定义，事实上就是我们所说的AP。这里就不再多说了。
+配置openwrt的dumb AP 模式 怎么刷openwrt我就不说了吧……= =
+主要参考 OpenWRT 官方Wiki：Dumb AP，但是官方Wiki有少许语焉不明。当然Wiki肯定会被继续完善，不过现在还是先看哥的吧。
+修改网络配置文件(/etc/config/network) 因为现在纯无线AP反而比无线路由器贵，所以说一般来讲看这个教程的应该是无线路由器的用户（非无线路由器用户请参考openwrt 官方教程），那么我们需要把WAN口和LAN口桥接起来（如果我没理解错的话）：
+config interface lan option type 'bridge' option ifname 'eth0.1 eth1' # 将vlan1 和 wan桥接起来 option proto 'dhcp'  这里需要注意的是，官方教程是把eth0.1和eth1桥接起来，但是事实上很多设备的WAN口不一定是eth1，譬如水星4530r的wan事实上却是eth0.2，所以请自行参考wan口的配置文件，譬如如果wan段如下，那么在lan段就应该是将eth0.1和eth0.2桥接起来，也就是： option ifname &lsquo;eth0.1 eth0.2&rsquo;
+config interface wan ... option ifname 'eth0.2' ...  桥接起来以后，我们需要禁用本身路由器关于wan口的配置：直接把所有wan，wan6的配置文件部分都注释掉，譬如wan6的配置部分：
+#config interface 'wan6' # option proto 'dhcpv6' # option ifname '@wan'  修改无线配置文件(/etc/config/wireless) 修改完成以后的文件看起来像下面这样：">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hong.im/posts/confige-an-openwrt-router-to-serve-as-a-dumb-access-point/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2013-08-05T13:46:38+00:00">
+<meta property="article:modified_time" content="2013-08-05T13:46:38+00:00"><meta property="og:site_name" content="北落师门">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="配置一台基于openwrt的无线路由器作为纯无线AP使用">
+<meta name=twitter:description content="什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
+无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
+对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。
+另外一个补充就是，因为无线路由器方式共享一个出口IP，所以说适用于共享上网的场景。而无线AP方式因为每个用户都是独立获取IP，所以适合于每个用户都用自己的账号进行上网的场景。
+openwrt上对Dumb AP的定义，事实上就是我们所说的AP。这里就不再多说了。
+配置openwrt的dumb AP 模式 怎么刷openwrt我就不说了吧……= =
+主要参考 OpenWRT 官方Wiki：Dumb AP，但是官方Wiki有少许语焉不明。当然Wiki肯定会被继续完善，不过现在还是先看哥的吧。
+修改网络配置文件(/etc/config/network) 因为现在纯无线AP反而比无线路由器贵，所以说一般来讲看这个教程的应该是无线路由器的用户（非无线路由器用户请参考openwrt 官方教程），那么我们需要把WAN口和LAN口桥接起来（如果我没理解错的话）：
+config interface lan option type 'bridge' option ifname 'eth0.1 eth1' # 将vlan1 和 wan桥接起来 option proto 'dhcp'  这里需要注意的是，官方教程是把eth0.1和eth1桥接起来，但是事实上很多设备的WAN口不一定是eth1，譬如水星4530r的wan事实上却是eth0.2，所以请自行参考wan口的配置文件，譬如如果wan段如下，那么在lan段就应该是将eth0.1和eth0.2桥接起来，也就是： option ifname &lsquo;eth0.1 eth0.2&rsquo;
+config interface wan ... option ifname 'eth0.2' ...  桥接起来以后，我们需要禁用本身路由器关于wan口的配置：直接把所有wan，wan6的配置文件部分都注释掉，譬如wan6的配置部分：
+#config interface 'wan6' # option proto 'dhcpv6' # option ifname '@wan'  修改无线配置文件(/etc/config/wireless) 修改完成以后的文件看起来像下面这样：">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-11520870-2','auto'),ga('send','pageview'))</script>
+<link type=text/css rel=stylesheet href=/vendor/css/bootstrap.min.css>
+<script src=/vendor/js/vue.min.js></script>
+<link rel=stylesheet href=https://hong.im/scss/journal.min.3f72a5fc8f5b5dd732a4b476aced0eece2156958d9d414316494ddb10593ddf7.css integrity="sha256-P3Kl/I9bXdcypLR2rO0O7OIVaVjZ1BQxZJTdsQWT3fc=" media=screen>
+<link rel=stylesheet href=https://hong.im/scss/dark-mode.min.c0082f0b082177f6fb3768ff91439a097de49689bd26f4d49f76d94ebb81e02d.css integrity="sha256-wAgvCwghd/b7N2j/kUOaCX3klom9JvTUn3bZTruB4C0=" media=screen>
+<script src=/js/loadCSS.js></script>
+<script>loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons")</script>
+<script src=/js/toc.js></script>
+</head>
+<body>
+<div id=app><div ref=sideContainer class=side-container>
+<a class="a-block nav-head false" href=https://hong.im/>
+<div class=nav-title>
+北落师门
+</div>
+<div class=nav-subtitle>
+墙里秋千墙外道。墙外行人 墙里佳人笑。
+</div>
+</a>
+<div class=nav-link-list>
+<a class="a-block nav-link-item active" href=/posts>
+归档
+</a>
+<a class="a-block nav-link-item false" href=/categories>
+分类
+</a>
+<a class="a-block nav-link-item false" href=/tags>
+标签
+</a>
+<a class="a-block nav-link-item false" href=/index.xml>
+RSS Feed
+</a>
+</div>
+<div class=nav-footer>
+Hugo Theme <a href=https://github.com/amazingrise/hugo-theme-diary>Diary</a> by <a href=https://amazingrise.net>Rise</a>
+<br>
+移植自 <a href=https://mak1t0.cc/ target=_blank rel="noreferrer noopener">Makito</a>'s <a href=https://github.com/SumiMakito/hexo-theme-journal/ target=_blank rel="noreferrer noopener">Journal.</a> <br>
+<br>
+&copy;
+This is a customized copyright.
+</div>
+</div><div ref=extraContainer class=extra-container>
+<div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+<div class=toc-content>
+<center>- 目录 -</center>
+<ul>
+<ul>
+<li>
+<a href=#%e4%bb%80%e4%b9%88%e6%98%afdumb-ap%e4%bb%a5%e5%8f%8a%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81dumb-ap onclick="onNavClick(`#什么是dumb-ap以及为什么需要dumb-ap-nav`)" id=什么是dumb-ap以及为什么需要dumb-ap-nav>
+什么是dumb AP以及为什么需要dumb AP
+</a>
+</li>
+<li>
+<a href=#%e9%85%8d%e7%bd%aeopenwrt%e7%9a%84dumb-ap-%e6%a8%a1%e5%bc%8f onclick="onNavClick(`#配置openwrt的dumb-ap-模式-nav`)" id=配置openwrt的dumb-ap-模式-nav>
+配置openwrt的dumb AP 模式
+</a>
+</li>
+<ul>
+<li>
+<a href=#%e4%bf%ae%e6%94%b9%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6etcconfignetwork onclick="onNavClick(`#修改网络配置文件etcconfignetwork-nav`)" id=修改网络配置文件etcconfignetwork-nav>
+修改网络配置文件(/etc/config/network)
+</a>
+</li>
+<li>
+<a href=#%e4%bf%ae%e6%94%b9%e6%97%a0%e7%ba%bf%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6etcconfigwireless onclick="onNavClick(`#修改无线配置文件etcconfigwireless-nav`)" id=修改无线配置文件etcconfigwireless-nav>
+修改无线配置文件(/etc/config/wireless)
+</a>
+</li>
+<li>
+<a href=#%e5%85%b3%e9%97%addhcp%e6%9c%8d%e5%8a%a1%e5%92%8c%e9%98%b2%e7%81%ab%e5%a2%99 onclick="onNavClick(`#关闭dhcp服务和防火墙-nav`)" id=关闭dhcp服务和防火墙-nav>
+关闭DHCP服务和防火墙
+</a>
+</li>
+</ul>
+<li>
+<a href=#%e5%85%b6%e4%bb%96%e9%97%ae%e9%a2%98 onclick="onNavClick(`#其他问题-nav`)" id=其他问题-nav>
+其他问题
+</a>
+</li>
+</ul>
+</div>
+</div>
+<div class=pagination>
+<a id=globalBackToTop class="pagination-action animated-visibility" href=#top :class="{ invisible: scrollY == 0 }">
+<i class="material-icons pagination-action-icon">
+keyboard_arrow_up
+</i>
+</a>
+<a class=pagination-action v-on:click=toggleDarkMode>
+<i class="material-icons pagination-action-icon" v-if=isDarkMode>
+brightness_4
+</i>
+<i class="material-icons pagination-action-icon" v-else=isDarkMode>
+brightness_7
+</i>
+</a>
+</div>
+</div>
+<div class=single-column-drawer-container ref=drawer v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+<div class=drawer-content>
+<div class=drawer-menu>
+<a class="a-block drawer-menu-item active" href=/posts>
+归档
+</a>
+<a class="a-block drawer-menu-item false" href=/categories>
+分类
+</a>
+<a class="a-block drawer-menu-item false" href=/tags>
+标签
+</a>
+<a class="a-block drawer-menu-item false" href=/index.xml>
+RSS Feed
+</a>
+<div class=toc>
+<div class=toc-content>
+<center>- 目录 -</center>
+<ul>
+<ul>
+<li>
+<a href=#%e4%bb%80%e4%b9%88%e6%98%afdumb-ap%e4%bb%a5%e5%8f%8a%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81dumb-ap onclick="onNavClick(`#什么是dumb-ap以及为什么需要dumb-ap-nav`)" id=什么是dumb-ap以及为什么需要dumb-ap-nav>
+什么是dumb AP以及为什么需要dumb AP
+</a>
+</li>
+<li>
+<a href=#%e9%85%8d%e7%bd%aeopenwrt%e7%9a%84dumb-ap-%e6%a8%a1%e5%bc%8f onclick="onNavClick(`#配置openwrt的dumb-ap-模式-nav`)" id=配置openwrt的dumb-ap-模式-nav>
+配置openwrt的dumb AP 模式
+</a>
+</li>
+<ul>
+<li>
+<a href=#%e4%bf%ae%e6%94%b9%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6etcconfignetwork onclick="onNavClick(`#修改网络配置文件etcconfignetwork-nav`)" id=修改网络配置文件etcconfignetwork-nav>
+修改网络配置文件(/etc/config/network)
+</a>
+</li>
+<li>
+<a href=#%e4%bf%ae%e6%94%b9%e6%97%a0%e7%ba%bf%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6etcconfigwireless onclick="onNavClick(`#修改无线配置文件etcconfigwireless-nav`)" id=修改无线配置文件etcconfigwireless-nav>
+修改无线配置文件(/etc/config/wireless)
+</a>
+</li>
+<li>
+<a href=#%e5%85%b3%e9%97%addhcp%e6%9c%8d%e5%8a%a1%e5%92%8c%e9%98%b2%e7%81%ab%e5%a2%99 onclick="onNavClick(`#关闭dhcp服务和防火墙-nav`)" id=关闭dhcp服务和防火墙-nav>
+关闭DHCP服务和防火墙
+</a>
+</li>
+</ul>
+<li>
+<a href=#%e5%85%b6%e4%bb%96%e9%97%ae%e9%a2%98 onclick="onNavClick(`#其他问题-nav`)" id=其他问题-nav>
+其他问题
+</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<transition name=fade>
+<div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if=isDrawerOpen v-on:click=toggleDrawer></div>
+</transition>
+<nav ref=navBar class="navbar sticky-top navbar-light single-column-nav-container">
+<div ref=navBackground class=nav-background></div>
+<div class="container container-narrow nav-content">
+<button id=nav_dropdown_btn class=nav-dropdown-toggle type=button v-on:click=toggleDrawer>
+<i class=material-icons>
+menu
+</i>
+</button>
+<a ref=navTitle class=navbar-brand href=https://hong.im/>
+北落师门
+</a>
+<button type=button class=nav-darkmode-toggle v-on:click=toggleDarkMode>
+<i class=material-icons v-if=isDarkMode>
+brightness_4
+</i>
+<i class=material-icons v-else=isDarkMode>
+brightness_7
+</i>
+</button>
+</div>
+</nav>
+<div class=single-column-header-container ref=pageHead v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+<a href=https://hong.im/>
+<div class=single-column-header-title>北落师门</div>
+<div class=single-column-header-subtitle>墙里秋千墙外道。墙外行人 墙里佳人笑。</div>
+</a>
+</div>
+<div id=content>
+<div ref=streamContainer class=stream-container>
+<div class="post-list-container post-list-container-shadow">
+<div class=post>
+<div class=post-head-wrapper-text-only>
+<div class=post-title>
+配置一台基于openwrt的无线路由器作为纯无线AP使用
+<div class=post-meta>
+<time itemprop=datePublished>
+2013-08-05 13:46
+</time>
+<i class=material-icons>label</i>
+<a href=/tags/openwrt>openwrt</a>
+&nbsp;
+<a href=/tags/mw4530r>mw4530r</a>
+&nbsp;
+<a href=/tags/dumb-ap>dumb-ap</a>
+&nbsp;
+<a href=/tags/ipv6>ipv6</a>
+&nbsp;
+</div>
+</div>
+</div>
+<div class=post-body-wrapper>
+<div class=post-body v-pre>
+<h2 id=什么是dumb-ap以及为什么需要dumb-ap>什么是dumb AP以及为什么需要dumb AP</h2>
+<p>我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。</p>
+<p>无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。</p>
+<p>对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。</p>
+<p>另外一个补充就是，因为无线路由器方式共享一个出口IP，所以说适用于共享上网的场景。而无线AP方式因为每个用户都是独立获取IP，所以适合于每个用户都用自己的账号进行上网的场景。</p>
+<p>openwrt上对<a href=http://wiki.openwrt.org/doc/recipes/dumbap>Dumb AP</a>的定义，事实上就是我们所说的AP。这里就不再多说了。</p>
+<h2 id=配置openwrt的dumb-ap-模式>配置openwrt的dumb AP 模式</h2>
+<p>怎么刷openwrt我就不说了吧……= =</p>
+<p>主要参考 <a href=http://wiki.openwrt.org/doc/recipes/dumbap>OpenWRT 官方Wiki：Dumb AP</a>，但是官方Wiki有少许语焉不明。当然Wiki肯定会被继续完善，不过现在还是先看哥的吧。</p>
+<h3 id=修改网络配置文件etcconfignetwork>修改网络配置文件(/etc/config/network)</h3>
+<p>因为现在纯无线AP反而比无线路由器贵，所以说一般来讲看这个教程的应该是无线路由器的用户（非无线路由器用户请参考openwrt 官方教程），那么我们需要把WAN口和LAN口桥接起来（如果我没理解错的话）：</p>
+<pre><code>config interface lan
+        option type     'bridge'
+        option ifname   'eth0.1 eth1'  # 将vlan1 和 wan桥接起来
+        option proto    'dhcp'         
+</code></pre>
+<p>这里需要注意的是，官方教程是把eth0.1和eth1桥接起来，但是事实上很多设备的WAN口不一定是eth1，譬如水星4530r的wan事实上却是eth0.2，所以请自行参考wan口的配置文件，譬如如果wan段如下，那么在lan段就应该是将eth0.1和eth0.2桥接起来，也就是： option ifname &lsquo;eth0.1 eth0.2&rsquo;</p>
+<pre><code>config interface wan
+        ...
+        option ifname   'eth0.2'
+        ...
+</code></pre>
+<p>桥接起来以后，我们需要禁用本身路由器关于wan口的配置：直接把所有wan，wan6的配置文件部分都注释掉，譬如wan6的配置部分：</p>
+<pre><code>#config interface 'wan6'
+#    option proto 'dhcpv6'
+#    option ifname '@wan'
+</code></pre>
+<h3 id=修改无线配置文件etcconfigwireless>修改无线配置文件(/etc/config/wireless)</h3>
+<p>修改完成以后的文件看起来像下面这样：</p>
+<pre><code>config 'wifi-iface'
+        option device  'radio0' # 这个不要动
+        option network 'lan'  # 酌情修改，可能不需要更改
+        option mode    'ap' # 酌情修改，可能不需要更改
+        option ssid    'ap_myaccesspoint' # 无线的名字
+        option encryption 'psk2'  # 无线加密方式
+        option key     'ap_password' # 无线密码 psk2要求8位以上。
+</code></pre>
+<h3 id=关闭dhcp服务和防火墙>关闭DHCP服务和防火墙</h3>
+<p>通过uci来关闭DHCP服务：</p>
+<pre><code>uci set dhcp.lan.ignore=1
+uci commit dhcp
+/etc/init.d/dnsmasq restart
+</code></pre>
+<p>关闭防火墙：</p>
+<pre><code>/etc/init.d/firewall disable
+/etc/init.d/firewall stop
+</code></pre>
+<p>然后载入新的配置：</p>
+<pre><code>/etc/init.d/network reload
+</code></pre>
+<h2 id=其他问题>其他问题</h2>
+<p>在配置为无线AP模式以后，如果还需要访问路由器，需要将电脑的IP地址手动设置为：</p>
+<pre><code>ip：192.168.1.x
+mask: 255.255.255.0
+gateway: 192.168.1.1
+</code></pre>
+<p>的方式才能正常访问。</p>
+<hr width=100% id=EOF>
+<p style=color:#777>最后修改于 2013-08-05</p>
+</div>
+</div>
+<nav class=post-pagination>
+<a class=newer-posts href=https://hong.im/posts/a-review-of-what-is-history/>
+下回<br>《历史是什么》读后感
+</a>
+<a class=older-posts href=https://hong.im/posts/self-examination-of-teaching-career/>
+上回<br>教师实践案例自我反思与总结
+</a>
+</nav>
+<div class=post-comment-wrapper>
+</div>
+</div>
+</div>
+</div>
+</div><div id=single-column-footer>
+Hugo Theme <a href=https://github.com/amazingrise/hugo-theme-diary>Diary</a> by <a href=https://amazingrise.net>Rise</a>
+<br>
+移植自 <a href=https://mak1t0.cc/ target=_blank rel="noreferrer noopener">Makito</a>'s <a href=https://github.com/SumiMakito/hexo-theme-journal/ target=_blank rel="noreferrer noopener">Journal.</a> <br>
+<br>
+&copy;
+This is a customized copyright.
+</div>
+</div>
+<script>let app;app=new Vue({el:'#app',data:{scrollY:0,navOpacity:0,isDrawerOpen:!1,mounted:!1,isDarkMode:!1},methods:{sgn(a,b){let c=1/(1-2*a);return b<=a?0:b>=1-a?1:c*(b-a)},handleScroll(){this.scrollY=window.scrollY,this.navOpacity=this.sgn(0,Math.min(1,Math.max(0,window.scrollY/(this.pageHeadHeight()-this.navBarHeight()*.8))));const{navBar:c,navBackground:a,navTitle:b,extraContainer:d,streamContainer:e}=this.$refs;this.navOpacity>=1?(a.style.opacity=1,b.style.opacity=1):(a.style.opacity=0,b.style.opacity=0)},handleResize(){const{navBar:c,navBackground:d,navTitle:e,extraContainer:a,streamContainer:b}=this.$refs;a.style.left=b.offsetWidth-a.offsetWidth+'px'},navBarHeight(){return this.$refs.navBar.offsetHeight},pageHeadHeight(){return this.$refs.pageHead.offsetHeight},toggleDrawer(){this.isDrawerOpen=!this.isDrawerOpen,document.getElementsByTagName('html')[0].style.overflow=this.isDrawerOpen?'hidden':'unset'},closeDrawer(){this.isDrawerOpen=!1,document.getElementsByTagName('html')[0].style.overflow=this.isDrawerOpen?'hidden':'unset'},toggleDarkMode(){this.isDarkMode=!this.isDarkMode,this.isDarkMode==!0?(document.cookie="night=1;path=/",document.body.classList.add("night")):(document.cookie="night=0;path=/",document.body.classList.remove("night"))},debounce(t,b,f){let e,g,l,d,a,c,i=0,q=!1,h=!1,n=!0;const s=!b&&b!==0&&typeof root.requestAnimationFrame=='function';if(typeof t!='function')throw new TypeError('Expected a function');function w(a){const b=typeof a;return a!=null&&(b==='object'||b==='function')}b=+b||0,w(f)&&(q=!!f.leading,h='maxWait'in f,l=h?Math.max(+f.maxWait||0,b):l,n='trailing'in f?!!f.trailing:n);function o(a){const b=e,c=g;return e=g=void 0,i=a,d=t.apply(c,b),d}function k(b,c){return s?(root.cancelAnimationFrame(a),root.requestAnimationFrame(b)):setTimeout(b,c)}function v(a){if(s)return root.cancelAnimationFrame(a);clearTimeout(a)}function A(c){return i=c,a=k(m,b),q?o(c):d}function u(a){const e=a-c,f=a-i,d=b-e;return h?Math.min(d,l-f):d}function r(a){const d=a-c,e=a-i;return c===void 0||d>=b||d<0||h&&e>=l}function m(){const b=Date.now();if(r(b))return p(b);a=k(m,u(b))}function p(b){return a=void 0,n&&e?o(b):(e=g=void 0,d)}function x(){a!==void 0&&v(a),i=0,e=c=g=a=void 0}function y(){return a===void 0?d:p(Date.now())}function z(){return a!==void 0}function j(...i){const f=Date.now(),j=r(f);if(e=i,g=this,c=f,j){if(a===void 0)return A(c);if(h)return a=k(m,b),o(c)}return a===void 0&&(a=k(m,b)),d}return j.cancel=x,j.flush=y,j.pending=z,j}},created(){window.addEventListener('scroll',this.handleScroll),window.addEventListener('resize',this.handleResize),window._nonDesktop=function(){let a=!1;return function(b){(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(b)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(b.substr(0,4)))&&(a=!0)}(navigator.userAgent||navigator.vendor||window.opera),a};var a=document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/,"$1");a==""?window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches:a=="1"&&this.toggleDarkMode()},mounted(){this.handleScroll(),this.handleResize(),this.mounted=!0,document.querySelectorAll("table").forEach(function(a){a.classList.add("table-striped"),a.classList.add("table"),a.classList.add("table-responsive"),a.classList.add("table-hover")}),spy(),window.addEventListener('scroll',this.debounce(spy,250,{maxWait:250}),!1)},destroyed(){window.removeEventListener('scroll',this.handleScroll),window.removeEventListener('resize',this.handleResize)}})</script>
+</body>
+</html>
