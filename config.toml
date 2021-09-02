@@ -20,7 +20,7 @@ googleAnalytics = "UA-11520870-2"
 
 [params]
 subtitle = "墙里秋千墙外道。墙外行人 墙里佳人笑。"
-enableGitalk = false
+enableGitalk = true
 
 # Twitter Card and Open Graph settings
 enableOpenGraph = true
@@ -29,10 +29,10 @@ title = "北落师门" # will set 'og:site_name'
 description = "墙里秋千墙外道。墙外行人 墙里佳人笑。"  # will set 'og:description'
 
 [params.gitalk]
-  owner = "zzz"
-  repo = "repo name"
-  client_id = "your client id"
-  client_secret = "your client secret"
+  owner = "reee"
+  repo = "blog-comments"
+  client_id = "1eaed2abf57af0ed1990"
+  client_secret = "1eb3b0e7cca9e0bd2789e50f3e7e6353c9551755"
 [taxonomies]
    tag = "tags"
    category = "categories"
