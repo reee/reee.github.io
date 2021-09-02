@@ -1,86 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>openwrt on 北落师门</title>
-    <link>https://hong.im/tags/openwrt/</link>
-    <description>Recent content in openwrt on 北落师门</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <copyright>This is a customized copyright.</copyright>
-    <lastBuildDate>Tue, 08 Jul 2014 15:55:59 +0000</lastBuildDate><atom:link href="https://hong.im/tags/openwrt/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>使用ipset让openwrt上的shadowsocks更智能的重定向流量</title>
-      <link>https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/</link>
-      <pubDate>Tue, 08 Jul 2014 15:55:59 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/use-ipset-with-shadowsocks-on-openwrt/</guid>
-      <description>之前看到有人分享通过dnsmasq的ipset功能简化流量重定向试了下发现很不错。这里分享一下。
-使用ipset的主要优势在于直接将所有被污染的域名解析结果交给ipset，不需要动态维护IP列表，在路由上更智能。主要适用于访问和谐站点较少，或者较固定的人群。
-本文默认为ar71xx平台，并使用openwrt trunk版本，请按照您的需要自行更改。
-本文包括三个部分： 0. 安装相应软件包 2. 配置dnsmasq和ipset 3. 【可选】使用pdnsd获取更优的解析结果。 4. DEBUG
-一、安装需要的软件包 需要从外部下载以后安装的： shadowsocks：推荐从http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/ 下载。 · 我的做法是下载下来在本地用nginx建一个http服务器，然后在路由器上去wget。另外的普遍做法是用winscp直接上传到路由器，共参考选择。
-开始安装：
-opkg update //安装前必须更新包数据库缓存。 opkg install ipset iptables-mod-nat-extra opkg install dnsmasq-full --force-overwrite //官方提供的dnsmasq-full提供了ipset相关 的功能，需要加后面的参数进行强制覆盖安装。  某些 版本ipset安装后会报类似下面的错误：
-kmod: failed to insert /lib/modules/3.10.44/ip_set.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ip.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_ipmac.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_bitmap_port.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ip.ko kmod: failed to insert /lib/modules/3.10.44/ip_set_hash_ipport.ko kmod: failed to insert /lib/modules/3.</description>
-    </item>
-    
-    <item>
-      <title>配置一台基于openWRT的路由器使用shadowsocks并智能穿墙</title>
-      <link>https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</link>
-      <pubDate>Sun, 16 Mar 2014 21:07:48 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/configure-an-openwrt-based-router-to-use-shadowsocks-and-redirect-foreign-traffic/</guid>
-      <description>本文开始写作时中使用的路由器为TP-LINK WR841N（D）V7（with openwrt 12.09 稳定版），到这次更新时已经换为了水星 4530R （with openwrt trunk）
-在路由器上使用shadowsocks的优势： 0. 效率比较高，在我的不严谨测试中效率比ipsec和pptp都略高。
- 目前为止比较稳定（较少受到干扰）而且比较安全。 服务器端和客户端的配置都相对来说比较简单，不容易出错。 路由器下面的所有设备都可以0配置自动穿墙，你懂的。 相比goagent（基本阵亡？默哀）而言，要求的包都很小。  劣势 0. 暂时没有发现。（是的。本来的问题我貌似解决了。）
-本文的基本目的是在openwrt上使用pdnsd通过tcp查询规避DNS污染，通过iptables转发到端口的功能转发特定流量给跑在路由器上的shadowsocks来访问某些特定IP段达到一定程度无视某墙的存在的目的。
-本文分为三个部分： 0. 相关包的安装和shadowsocks的配置
- pdnsd的配置 使用iptables对流量进行重定向  在openwrt上安装相关的包并配置shadowsocks 其中shadowsocks我们使用shadowsocks-libev-polarssl（openssl的lib比较大，塞不下……），推荐从这里获取： http://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/
-然后在路由器端刷新opkg缓存包并安装shadowsocks：
-opkg update opkg install shadowsocks-libev-polarssl_1.4.5_ar71xx.ipk  我们还需要安装额外的包，其中我们使用pdnsd（如果后面直接配置dnsmasq转发请求给opendns则不需要）来净化部分国外域名解析，用iptables-mod-nat-extra实现iptables流量转发到端口的功能：
-opkg update opkg install pdnsd opkg install pdnsd iptables-mod-nat-extra  我们需要编辑shadowsocks的配置信息 /etc/config/shadowsocks.json（新版默认的配置文件移动到了/etc/shadowsocks.json 不过在后面启动的时候指定就好了，无影响。）： 格式如下：
-{ &amp;quot;server&amp;quot;:&amp;quot;[服务器IP地址]&amp;quot;, &amp;quot;server_port&amp;quot;:[服务器端口], &amp;quot;local_port&amp;quot;:[本地端口,稍后iptables会用到], &amp;quot;password&amp;quot;:&amp;quot;[密码]&amp;quot;, &amp;quot;timeout&amp;quot;:600, &amp;quot;method&amp;quot;:&amp;quot;[加密方式]&amp;quot; }  在12.09上shadowsocks会因为缺少libpolarssl.so.3而无法启动，我们可以使用ln“欺骗”一下shadowsocks：
-注：我目前一切切换到trunk版本，不知道新版是否还存在这个BUG，请自行测试能否启动。
-ln -s /usr/lib/libpolarssl.so /usr/lib/libpolarssl.so.3  配置pdnsd对某些域名进行净化 我采用的基本思路是通过pdnsd使用TCP协议向国外的上级DNS查询而避过DNS污染，然后在本地提供一个1053端口的DNS供dnsmasq使用。如果全局使用pdnsd转发的国外DNS会导致国内某些网站或者服务访问较慢，不推荐。 另外一个思路是使用非标准端口查询，那么就可以不需要配置pdnsd，直接在dnsmasq配置中将相关域名查询请求转发给支持非标准端口的DNS就行了，目前已知的是opendns支持5353端口和443端口。（即在dnsmasq段配置将127.</description>
-    </item>
-    
-    <item>
-      <title>配置一台基于openwrt的无线路由器作为纯无线AP使用</title>
-      <link>https://hong.im/posts/confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</link>
-      <pubDate>Mon, 05 Aug 2013 13:46:38 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/confige-an-openwrt-router-to-serve-as-a-dumb-access-point/</guid>
-      <description>什么是dumb AP以及为什么需要dumb AP 我觉得第一个要解释的是，什么是AP，也就是或者说无线接入点（Wireless Access Point）。
-无线接入点可以简单的看做是通过无线提供的集线器。无线路由器会自己构造一个子网然后所有接入用户共享一个出口IP。而无线接入点只提供接入服务（无线的网线），接入客户的路由服务由接入点的上层设备提供。举个栗子：某正常大学某楼分配的是59.64.32.0/24 的一个子网。如果用无线路由器，那么路由器下所有用户没有公网IP，共享一个公网IP出口（59.64.32.x）。而如果使用无线AP，那么通过无线AP连接的每一个用户都能分配到一个公网IP（59.64.32.x）。
-对于教育网用户还有一个好处，因为目前大多数路由器并不支持ipv6，所以如果通过无线路由器的方式没办法获得IPV6地址也就上不了传说中的六维什么的少数教育网福利。而通过无线AP模式，则完全由上层设备路由，所以每个通过无线AP连接的用户都能正常获得IPV6地址（猜测，没有实践过）。
-另外一个补充就是，因为无线路由器方式共享一个出口IP，所以说适用于共享上网的场景。而无线AP方式因为每个用户都是独立获取IP，所以适合于每个用户都用自己的账号进行上网的场景。
-openwrt上对Dumb AP的定义，事实上就是我们所说的AP。这里就不再多说了。
-配置openwrt的dumb AP 模式 怎么刷openwrt我就不说了吧……= =
-主要参考 OpenWRT 官方Wiki：Dumb AP，但是官方Wiki有少许语焉不明。当然Wiki肯定会被继续完善，不过现在还是先看哥的吧。
-修改网络配置文件(/etc/config/network) 因为现在纯无线AP反而比无线路由器贵，所以说一般来讲看这个教程的应该是无线路由器的用户（非无线路由器用户请参考openwrt 官方教程），那么我们需要把WAN口和LAN口桥接起来（如果我没理解错的话）：
-config interface lan option type &#39;bridge&#39; option ifname &#39;eth0.1 eth1&#39; # 将vlan1 和 wan桥接起来 option proto &#39;dhcp&#39;  这里需要注意的是，官方教程是把eth0.1和eth1桥接起来，但是事实上很多设备的WAN口不一定是eth1，譬如水星4530r的wan事实上却是eth0.2，所以请自行参考wan口的配置文件，譬如如果wan段如下，那么在lan段就应该是将eth0.1和eth0.2桥接起来，也就是： option ifname &amp;lsquo;eth0.1 eth0.2&amp;rsquo;
-config interface wan ... option ifname &#39;eth0.2&#39; ...  桥接起来以后，我们需要禁用本身路由器关于wan口的配置：直接把所有wan，wan6的配置文件部分都注释掉，譬如wan6的配置部分：
-#config interface &#39;wan6&#39; # option proto &#39;dhcpv6&#39; # option ifname &#39;@wan&#39;  修改无线配置文件(/etc/config/wireless) 修改完成以后的文件看起来像下面这样：</description>
-    </item>
-    
-    <item>
-      <title>在wr841n上刷openwrt并使用openvpn自动VPN</title>
-      <link>https://hong.im/posts/openvpn-on-wr841n-with-openwrt/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/openvpn-on-wr841n-with-openwrt/</guid>
-      <description>刚出来工作就买了一个WR841ND。最开始其实没咋倒腾，因为dd-wrt虽然功能多但是用到的不多，反而配置太多看着头晕，而开始倒腾openwrt的时候又觉得openwrt的界面太难看&amp;mdash;不想动。所以其实一直是官方固件。不过最近由于斯巴达的即将召开，导致Google搜索基本上来讲完全瘫痪，而恰好又买了一个香港的VPS。所以决定倒腾倒腾让路由器直接连VPN然后智能路由。
-硬件信息：TP-Link TL-WR841ND v7.1
-注意：一下操作要求一定的linux基础和一定动手能力，所以请务必谋定而动。
-##首先是刷上openwrt
-刷新之前请注意：目前trunk中的openwrt默认没有启用web界面，虽然最新稳定版openwrt发布已经支持wr841n(d)了，但是我还是喜欢trunk……因为trunk里面没有我用不到的web界面……又可以节省好多K的空间装其他东西……
-从官方固件刷到openwrt是很简单的。直接从trunk下载适用于wr841nd的固件 然后通过官方固件的web界面中升级固件更新就行了。
-现在你最好telnet过去修改密码，这样会禁用telnet而启用ssh。当然如果你是在太懒这个其实也无所谓啦。
-##配置网络
-现在你需要配置好网络，请参考：openwrt 官方wiki关于网络配置的说明 。如果是 静态IP ，那么示例如下：
-uci set network.wan.proto=static //表示使用静态IP。uci set network.wan.ipaddr=192.168.100.111 //我使用的是联通光猫。开了路由功能。所以可以直接静态IP。uci set network.wan.netmask=255.255.255.0uci set network.wan.gateway=192.168.100.1uci set network.wan.dns=&#39;8.8.8.8 8.8.4.4&#39;uci commit networkifup wan 当然其实直接编辑/etc/config/network是一条更快的捷径,以下以 pppoe拨号 为例，与静态IP不同，我们一定要注意设定openwrt不通过ppp获得运营商的DNS，否则挂上VPN以后几乎一定会因为运营商DNS延迟更低而选择使用运营商DNS从而不能避免DNS污染，我们只修改wan段：
-config interface &#39;wan&#39;option ifname &#39;eth1&#39;option proto &#39;pppoe&#39; //表示使用pppoe拨号option username &#39;dsl11xxxxxxxx&#39; //pppoe帐号option password &#39;xxxxxx&#39; //pppoe密码option peerdns &#39;0&#39; //表示不从运营商获取DNS，很重要！option dns &#39;8.8.8.8 8.8.4.4&#39; 配置好网络以后你可以试一下ping 8.</description>
-    </item>
-    
-  </channel>
-</rss>

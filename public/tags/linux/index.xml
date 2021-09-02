@@ -1,76 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Linux on 北落师门</title>
-    <link>https://hong.im/tags/linux/</link>
-    <description>Recent content in Linux on 北落师门</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <copyright>This is a customized copyright.</copyright>
-    <lastBuildDate>Sun, 27 Oct 2013 15:39:41 +0000</lastBuildDate><atom:link href="https://hong.im/tags/linux/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>在Linux下面批量修改文件名字以及内容</title>
-      <link>https://hong.im/posts/edit-a-batch-of-files-in-linux/</link>
-      <pubDate>Sun, 27 Oct 2013 15:39:41 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/edit-a-batch-of-files-in-linux/</guid>
-      <description>众所周知，sed和awk被称为Linux系统维护的两大瑞士军刀，但是一直没学会……最近遇到批量修改文件的场合，用到了sed，所以记录一下。
-批量修改文件名字 for i in `ls`; do mv -f $i `echo $i | sed &#39;s/oldstring/newstring/&#39;`; done  其实上面已经不算是一个语句了，而是通过for循环一个个的取出所有文件名达到遍历的效果。 基本原理是使用echo取得文件名，交给sed替换字符串然后把结果（也就是新的文件名）作为参数回传给mv。 需要注意的是，在shell里面把命令运行结果当作参数引用时，是需要用到 `` （键盘esc下面那个键）把需要引用的部分包围起来的。
-批量替换文件内容 sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep -rl oldstring /path/to/dir`  这个其实蛮简单的。说下sed的几个参数。
--i 表示直接把文件编辑掉（默认不会去修改文件内容）。 双引号里面第一个s 的意思是替换，这个应该已经比较明确了。 而最后那个g表示全部替换。  同样的，grep的结果是作为参数传给sed的，所以也需要用 `` 包围起来。其实个人感觉直接来个ls应该也能达到目的。</description>
-    </item>
-    
-    <item>
-      <title>高流量大并发Linux TCP 性能调优</title>
-      <link>https://hong.im/posts/linux-tcp-tuning/</link>
-      <pubDate>Sat, 20 Apr 2013 00:23:43 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/linux-tcp-tuning/</guid>
-      <description>呃……标题比较隐晦。其实主要是手里面的跑openvpn服务器。因为并没有明文禁p2p（哎……想想那么多流量好像不跑点p2p也跑不完），所以造成有的时候如果有比较多人跑BT的话，会造成VPN速度急剧下降。
-本文参考文章为：
-优化Linux下的内核TCP参数来提高服务器负载能力
-Linux Tuning
-本文所面对的情况为：
- 高并发数 高延迟高丢包（典型的美国服务器）  值得注意的是，因为openvz的VPS权限比较低，能够修改的地方比较少，所以使用openvz的VPS作VPN服务器是非常不推荐的。
-我们通过修改 /etc/sysctl.conf 来达到调整的目的，注意修改完以后记得使用：
-sysctl -p  来使修改生效。
-首先，针对高并发数，我们需要提高一些linux的默认限制:
-fs.file-max = 51200 #提高整个系统的文件限制 net.ipv4.tcp_syncookies = 1 #表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭； net.ipv4.tcp_tw_reuse = 1 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_recycle = 0 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭； #为了对NAT设备更友好，建议设置为0。 net.ipv4.tcp_fin_timeout = 30 #修改系統默认的 TIMEOUT 时间。 net.ipv4.tcp_keepalive_time = 1200 #表示当keepalive起用的时候，TCP发送keepalive消息的频度。缺省是2小时，改为20分钟。 net.ipv4.ip_local_port_range = 10000 65000 #表示用于向外连接的端口范围。缺省情况下很小：32768到61000，改为10000到65000。（注意：这里不要将最低值设的太低，否则可能会占用掉正常的端口！） net.ipv4.tcp_max_syn_backlog = 8192 #表示SYN队列的长度，默认为1024，加大队列长度为8192，可以容纳更多等待连接的网络连接数。 net.ipv4.tcp_max_tw_buckets = 5000 #表示系统同时保持TIME_WAIT的最大数量，如果超过这个数字，TIME_WAIT将立刻被清除并打印警告信息。 #额外的，对于内核版本新于**3.7.1**的，我们可以开启tcp_fastopen： net.ipv4.tcp_fastopen = 3  其次，针对大流量高丢包高延迟的情况，我们通过增大缓存来提高TCP性能，自己看E文注释吧……感觉我翻译出来各种味道不对 = =：</description>
-    </item>
-    
-    <item>
-      <title>ATI显卡高清视频播放</title>
-      <link>https://hong.im/posts/video-acceleration-on-e350-apu/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/video-acceleration-on-e350-apu/</guid>
-      <description>前一个月手痒没忍住，入了AMD的E350 APU平台，主板加电源加硬盘加机箱一共花了1K左右，作为一个30W多一点的HTPC+NAS解决方案感觉还是不错的。至于装配过程就没啥好说的了，就一块板子插上电源拧上螺丝。走线神码的，乃们自己去看chiphell上面那些大神耍帅吧。
-既然要作为NAS，显然跑Linux就是一个合理的选择了，不过地球人都知道Linux下的高清硬解神码的，跟Windows比就是战斗力只有5的渣渣啊。
-废话不多说，ATI的开源显卡驱动并不支持高清视频硬解，当然它可能在不久的将来到来，不过，你就翘着脖子等着吧。另外不要相信之前文章说高清视频播放开源驱动比闭源驱动开硬解资源占用要低。我如果用开源驱动只能勉强搞定720P。1080P。哦买噶。完全是幻灯片啊。
-闭源驱动搞得比较纠结，安装就按Arch的官方wiki 来的。不过当真正开始硬解的时候有一点点小问题：
-smplayer：我使用官方源中的mplayer-vaapi极易崩溃。基本无法使用，如果使用mplayer2的话，则又不能开启硬解。所以虽然我也很喜欢smplayer但是……不给面子没办法……
-vlc: VLC则能够轻松搞定1080p重编码（CPU占用两个核心都稳定在50%），但是10BIT会出现大量色块，其中包括德艺双馨的波多野结衣的那个4G多的mp4文件。要搞定vlc的硬解，arch WIKI上的并不完整，还需要额外参考VLC关于硬解的官方文档 修改一下环境变量。具体文档说的挺清楚了不再赘述，不过你并不需要重新编译ffmpeg和vlc，也就是只需要添加好环境变量就好。我的所有视频中有两个REMUX的ts文件播放出来是黑屏莫名其妙。
-XBMC: XBMC与VLC类似，但是能搞定那两个REMUX的ts文件。另外我开始XBMC莫名其妙没有声音很是奇怪。
-总而言之，E350集成显卡的硬件加速也就算是恰好凑合能用吧。有兴趣的自己倒腾倒腾。我下一步开始配置transmission，samba和dnsmasq了。</description>
-    </item>
-    
-    <item>
-      <title>在CentOS上搭建pptp服务器并使用radius进行账户认证</title>
-      <link>https://hong.im/posts/set-up-a-pptp-server-on-centos-and-auth-by-radius/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://hong.im/posts/set-up-a-pptp-server-on-centos-and-auth-by-radius/</guid>
-      <description>感觉主流的VPN服务器里面pptp应该是最简单的了。总结下吧。本来没想搞这个的。可惜ipv4下的openvpn根本就是被我伟大的防火墙秒杀。所以先配个用着吧。
-系统环境：centos 6.3 x86_64 xen虚拟机（我会炫耀说是樱花的么 = =）
-安装相关软件 首先需要安装ppp和pptp以及radius认证库radiusclient-ng，ppp和radiusclient-ng在官方源里面有，所以直接安装就行了：
-yum -y install ppp radiusclient-ng 这里需要说一下的就是大部分教程都要求安装radiusclient而非radiusclient-ng。但是如果到radiusclient-ng的官方页面你会发现radiusclient-ng其实就是radiusclient的后续版本，最新的radiusclient已经是05年的了，虽然似乎不影响使用，但是真的是太老太老了。
-pptpd直接安装sourceforge上提供的二进制版本就好了，这里是64位版本，如果你要安装32位版本把尾巴的x86_64改成i686就好了，如果是centos5的话，自己改咯：
-rpm -ivh http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.3.4-2.el6.x86_64.rpm 修改相关配置 备份是个好习惯，不过其实这里没太大必要备份了= =：
-mv /etc/ppp/options.pptpd /etc/ppp/options.pptpd.bakvi /etc/ppp/options.pptpd 在option.pptpd里面写入相关的配置：
-name pptpdrefuse-paprefuse-chaprefuse-mschaprequire-mschap-v2require-mppe-128proxyarplocknobsdcompnovjnovjccompnologfdidle 2592000ms-dns 8.8.8.8ms-dns 8.8.4.4#下面是radius认证需要的库以及配置文件#同样的，如果您是32位系统应该将lib64改为libplugin /usr/lib64/pppd/2.4.5/radius.soplugin /usr/lib64/pppd/2.4.5/radattr.soradius-config-file /etc/radiusclient-ng/radiusclient.conf 修改/etc/pptpd.conf
-mv /etc/pptpd.conf /etc/pptpd.conf.bakvi /etc/pptpd.conf 其实需要改动的很少，其他还有一些譬如限制同时在线人数的，请自己阅读原始的pptpd.conf：
-option /etc/ppp/options.pptpd#下面是指定服务器使用的IPlocalip 192.</description>
-    </item>
-    
-  </channel>
-</rss>
